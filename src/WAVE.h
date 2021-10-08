@@ -36,7 +36,7 @@ public:
 
     /**
      * Decodes the WAVE file `audio_file_path`.
-     * @param audio_file_path Path of the WAVE file.
+     * @param audio_file_path path of the WAVE file
      */
     explicit WAVE(std::string audio_file_path) try:
         audio_file_path(std::move(audio_file_path)) // TODO
@@ -56,7 +56,7 @@ public:
 
     /**
      * Returns the audio signal.
-     * @return Audio signal.
+     * @return audio signal
      */
     std::vector<std::shared_ptr<std::vector<double>>> get_signal() const
     {
@@ -65,7 +65,7 @@ public:
 
     /**
      * Returns the sample rate.
-     * @return Sample rate.
+     * @return sample rate
      */
     const unsigned int &get_sample_rate() const
     {
@@ -95,7 +95,7 @@ private:
     uint32_t chunk_size{};
     std::string format{};
 
-    // Format sub-chunk
+    // format sub-chunk
     std::string format_chunk_id{};
     uint32_t format_chunk_size{};
     uint16_t audio_format{};
@@ -105,7 +105,7 @@ private:
     uint16_t block_align{};
     uint16_t bits_per_sample{};
 
-    // Data sub-chunk
+    // data sub-chunk
     std::string data_chunk_id{};
     uint32_t data_chunk_size{};
     // Each uint16_t vector contains the data of a channel respectively

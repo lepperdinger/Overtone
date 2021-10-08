@@ -48,6 +48,10 @@ public:
      */
     void convert_to_wave();
 
+    /**
+     * Converts the frames in `frames_directory_path` and the audio file
+     * `audio_file_path` to a video and saves it into the file `video_path`
+     */
     void convert_to_mp4();
 
     std::string get_frames_directory_path() const

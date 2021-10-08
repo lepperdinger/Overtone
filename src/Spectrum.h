@@ -11,7 +11,7 @@
 #include <algorithm>
 #include <limits>
 /**
- * Evaluates spectra.
+ * Class for evaluating the audio spectra for each video frame
  */
 class Spectrum
 {
@@ -29,10 +29,10 @@ public:
      * frame is smaller than minimum_samples, the range of an audio frame gets
      * extended on both sides.
      * @param wave WAVE object that contains the PCM signal.
-     * @param channels Selected channels.
-     * @param frame_rate Video frame rate.
-     * @param key_range Key range.
-     * @param minimum_samples Minimum audio samples per video frame.
+     * @param channels selected channels
+     * @param frame_rate video frame rate
+     * @param key_range key range
+     * @param minimum_samples minimum audio samples per video frame
      */
     explicit Spectrum(const WAVE &wave,
                       const std::vector<unsigned> &channels,
@@ -49,7 +49,7 @@ public:
 
     /**
      * Returns the spectrum.
-     * @return Spectrum.
+     * @return spectrum
      */
     std::shared_ptr<Vector> get_spectrum() const
     {
@@ -58,7 +58,7 @@ public:
 
     /**
      * Returns the frequencies of the spectrum.
-     * @return Frequencies.
+     * @return frequencies
      */
     std::shared_ptr<Vector> get_frequencies() const
     {
@@ -67,7 +67,7 @@ public:
 
     /**
      * Returns the keyboard of the spectrum.
-     * @return Keys.
+     * @return keys
      */
     std::shared_ptr<Vector> get_keys() const
     {
@@ -76,7 +76,7 @@ public:
 
     /**
      * Returns the key range within which the spectrum has been evaluated.
-     * @return Key range.
+     * @return key range
      */
     KeyRange get_key_range() const
     {
@@ -87,31 +87,31 @@ private:
     // WAVE object that contains the PCM signal.
     WAVE wave;
 
-    // The number of audio samples per video frame.
+    // the number of audio samples per video frame
     const VectorSize samples_per_video_frame;
 
-    // The time index range of a video frame.
+    // the time index range of a video frame
     VectorRange time_range_video_frame;
 
-    // The key range within which the spectrum gets evaluated.
+    // the key range within which the spectrum gets evaluated
     KeyRange key_range;
 
     // The minimum number of audio samples.
     VectorSize minimum_samples;
 
-    // The number of audio samples in the PCM signal.
+    // the number of audio samples in the PCM signal
     VectorSize time_size;
 
-    // The selected channels for which the spectrum gets evaluated.
+    // the selected channels for which the spectrum gets evaluated
     std::vector<unsigned> channels;
 
-    // The frequencies of the current spectrum.
+    // the frequencies of the current spectrum
     std::shared_ptr<Vector> frequencies;
 
-    // The keyboard of the current spectrum.
+    // the keyboard of the current spectrum
     std::shared_ptr<Vector> keys;
 
-    // The spectrum of the current video frame.
+    // the spectrum of the current video frame
     std::shared_ptr<Vector> spectrum;
 
     /**
@@ -122,7 +122,7 @@ private:
     /**
      * Evaluates the time index range of the current video frame. The time range
      * gets extended if samples_per_video_frame >= minimum_samples.
-     * @return Time index range.
+     * @return time index range
      */
     VectorRange evaluate_time_range();
 
@@ -130,9 +130,9 @@ private:
      * Evaluates the spectrum of a single channel within a specified time and
      * frequency range.
      * @param channel PCM signal of the channel.
-     * @param time_range Time index range.
-     * @param frequency_range Frequency range.
-     * @return Spectrum of the selected channel.
+     * @param time_range time index range
+     * @param frequency_range frequency range
+     * @return spectrum of the selected channel
      */
     static Vector evaluate_channel_spectrum(const Vector &channel,
                                             const VectorRange &time_range,
@@ -148,9 +148,9 @@ private:
      * Evaluates all the frequencies of the Fourier transform. The Fourier
      * transform gets then evaluated only for the frequencies within the
      * selected key range.
-     * @param time_range Time index range of the current frame.
-     * @param sample_rate Audio sample rate.
-     * @return All frequencies of the Fourier transform.
+     * @param time_range time index range of the current frame
+     * @param sample_rate audio sample rate
+     * @return all frequencies of the Fourier transform
      */
     static Vector evaluate_all_frequencies(const VectorRange &time_range,
                                            const VectorSize &sample_rate);
@@ -158,9 +158,9 @@ private:
     /**
      * Returns the index range of the frequencies between the key range
      * key_range.first - 0.5 and key_range.second + 0.5
-     * @param key_range Selected key range.
-     * @param all_frequencies All frequencies of the Fourier transform.
-     * @return Frequencies that contain the specified key range.
+     * @param key_range selected key range
+     * @param all_frequencies all frequencies of the Fourier transform
+     * @return frequencies that contain the specified key range
      */
     static VectorRange key_range_to_frequency_range(
         const KeyRange &key_range,
@@ -169,37 +169,37 @@ private:
 
     /**
      * Converts the frequencies to keyboard.
-     * @param frequencies Frequencies.
-     * @return Keys.
+     * @param frequencies frequencies
+     * @return keys
      */
     inline static Vector evaluate_keys(const Vector &frequencies);
 
     /**
      * Square root.
-     * @param value
-     * @return  Square root of value.
+     * @param value input value
+     * @return square root of value
      */
     inline static double sqr(double value);
 
     /**
      * Absolute value of a complex number.
-     * @param real_part Real part of the complex number.
-     * @param imaginary_part Imaginary part of the complex number.
-     * @return Absolute value of the complex number.
+     * @param real_part real part of the complex number
+     * @param imaginary_part imaginary part of the complex number
+     * @return absolute value of the complex number
      */
     inline static double abs(double real_part, double imaginary_part);
 
     /**
      * Converts a key to a frequency.
-     * @param key Key.
-     * @return Frequency.
+     * @param key key
+     * @return frequency
      */
     inline static double keys_to_frequencies(const double &key);
 
     /**
      * Converts a frequency to a key.
-     * @param frequency Frequency.
-     * @return Key.
+     * @param frequency frequency
+     * @return key
      */
     inline static double frequencies_to_keys(const double &frequency);
 };

@@ -10,16 +10,31 @@
 #include <string>
 #include <iostream>
 
+/**
+ * Class for saving data to JSON files. This is, for example, useful for
+ * analyzing data in Python and for debugging. Overtone doesn't use this class
+ * during normal operation.
+ */
 class JSON
 {
 public:
+    /**
+     * @param directory_path path into which the JSON files should be saved
+     */
     explicit JSON(std::string directory_path):
         directory_path(std::move(directory_path))
     {
     }
-    template <typename Type> void
-    save_vector(const std::vector<Type> &vector,
-                const std::string &file_name);
+
+    /**
+     * Saves the data contained by a vector into a JSON file.
+     * @tparam Type type of the vector elements of the data vector
+     * @param vector vector that contains the data that should be saved
+     * @param file_name name of the JSON file into which the data should be
+     *                  saved
+     */
+    template <typename Type> void save_vector(const std::vector<Type> &vector,
+                                              const std::string &file_name);
 private:
     const std::string directory_path;
 };
