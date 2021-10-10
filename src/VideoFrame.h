@@ -14,8 +14,6 @@
 class VideoFrame
 {
 public:
-    using Frame = std::vector<unsigned char>;
-    using FrameSize = Frame::size_type;
     using Vector = std::vector<double>;
     using VectorSize = std::vector<double>::size_type;
     VideoFrame(FFmpeg ffmpeg,
@@ -24,11 +22,20 @@ public:
     void save_frame(const unsigned &frame_index);
     bool evaluate_frame(const unsigned &frame_index);
 private:
+    using Pixel = std::vector<unsigned char>;
+    using PixelSize = Pixel::size_type;
+    using Row = std::vector<Pixel>;
+    using RowSize = Row::size_type;
+    using RowPointer = std::shared_ptr<Row>;
+    using Frame = std::vector<RowPointer>;
+    using FrameSize = Frame::size_type;
+    Frame frame;
+    RowPointer tmp_row;
+    void create_frame();
+
     FFmpeg ffmpeg;
     unsigned frame_width;
     unsigned frame_height;
-    FrameSize number_of_pixels;
-    Frame frame;
     double gain;
     const std::vector<VectorSize> white_keys;
     const std::vector<VectorSize> black_keys;
@@ -39,8 +46,6 @@ private:
                           const FrameSize &column);
 
     inline void color_map(double input_value);
-
-
 
     inline void layer_0_background();
     inline void layer_1_frame();

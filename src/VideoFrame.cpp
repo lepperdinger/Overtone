@@ -13,11 +13,11 @@ using std::endl;
 VideoFrame::VideoFrame(FFmpeg ffmpeg,
                        double gain,
                        Keyboard keyboard):
+    frame(),
+    tmp_row(),
     ffmpeg(std::move(ffmpeg)),
     frame_width(1920),
     frame_height(1080),
-    number_of_pixels(frame_width * frame_height * 3),
-    frame(number_of_pixels, 0),
     gain(gain),
     white_keys({0, 2, 3, 5, 7, 8, 10, 12, 14, 15, 17, 19, 20, 22, 24, 26, 27,
                 29, 31, 32, 34, 36, 38, 39, 41, 43, 44, 46, 48, 50, 51, 53, 55,
@@ -35,8 +35,33 @@ VideoFrame::VideoFrame(FFmpeg ffmpeg,
     {
         throw std::out_of_range("The argument `gain` is negative.");
     }
+    create_frame();
     layer_0_background();
     layer_1_frame();
+}
+
+void VideoFrame::create_frame()
+{
+    for (FrameSize row_index = 0; row_index < frame_height; ++row_index)
+    {
+        Pixel pixel({0, 0, 0});
+        Row row;
+        for (RowSize column_index = 0; column_index < frame_width;
+             ++column_index)
+        {
+            row.push_back(pixel);
+        }
+        RowPointer row_pointer = std::make_shared<Row>(row);
+        frame.push_back(row_pointer);
+    }
+    Pixel pixel({0, 0, 0});
+    Row row;
+    for (RowSize column_index = 0; column_index < frame_width;
+         ++column_index)
+    {
+        row.push_back(pixel);
+    }
+    tmp_row = std::make_shared<Row>(row);
 }
 
 bool VideoFrame::evaluate_frame(const unsigned &frame_index)
@@ -61,8 +86,13 @@ void VideoFrame::save_frame(const unsigned &frame_index)
     ppm_file << "P6\n"
              << frame_width << ' ' << frame_height << '\n'
              << "255" << '\n';
-    std::ostream_iterator<unsigned char> file_iterator(ppm_file);
-    std::copy(frame.cbegin(), frame.cend(), file_iterator);
+    for (FrameSize row = 0; row < frame_height; ++row)
+        for(RowSize column = 0; column < frame_width; ++column)
+        {
+            ppm_file << (*frame[row])[column][0]
+                     << (*frame[row])[column][1]
+                     << (*frame[row])[column][2];
+        }
     ppm_file << std::flush;
 
     std::ostringstream png_file_path;
@@ -72,7 +102,7 @@ void VideoFrame::save_frame(const unsigned &frame_index)
     std::string command = ffmpeg.get_ffmpeg_executable_path()
                           + " -i " + ppm_file_path
                           + " " + png_file_path.str()
-                          + " -y 1>/dev/null 2>&1"; // TODO: &>/dev/null
+                          + " -y 1>/dev/null 2>&1";
     if (std::system(command.c_str()))
     {
         throw FFmpeg::file_conversion_error("Conversion from '" + ppm_file_path
@@ -84,16 +114,7 @@ void VideoFrame::save_frame(const unsigned &frame_index)
 inline void VideoFrame::set_pixel(const FrameSize &row,
                                   const FrameSize &column)
 {
-    FrameSize position = (row*frame_width + column) * 3;
-#ifdef DEBUG
-    frame.at(position) = red;
-    frame.at(++position) = green;
-    frame.at(++position) = blue;
-#else
-    frame[position] = red;
-    frame[++position] = green;
-    frame[++position] = blue;
-#endif
+    (*frame[row])[column].assign({red, green, blue});
 }
 
 void VideoFrame::color_map(double input_value)
@@ -140,11 +161,12 @@ void VideoFrame::layer_0_background()
     color_map(0);
     auto frame_iterator = frame.begin();
     auto frame_end= frame.end();
-    while (frame_iterator != frame_end)
+    for (FrameSize row = 0; row < frame_height; ++row)
     {
-        *frame_iterator++ = red;
-        *frame_iterator++ = green;
-        *frame_iterator++ = blue;
+        for (RowSize column = 0; column < frame_width; ++column)
+        {
+            (*frame[row])[column].assign({red, green, blue});
+        }
     }
 }
 
@@ -360,23 +382,12 @@ void VideoFrame::layer_4_black_keys()
 
 inline void VideoFrame::layer_2_history()
 {
-    // FrameSize position = (row*frame_width + column) * 3;
-    FrameSize source_pixel;
-    for (VectorSize row = 24; row != 809; ++row)
+    FrameSize source_row;
+    RowSize source_column;
+    tmp_row = frame[24];
+    for (FrameSize row = 24; row != 809; ++row)
     {
-        source_pixel = ((row + 1) * frame_width + 24) * 3;
-        for(VectorSize column = 24; column != 1896; ++column)
-        {
-#ifdef DEBUG
-            red = frame.at(source_pixel++);
-            green = frame.at(source_pixel++);
-            blue = frame.at(source_pixel++);
-#else
-            red = frame[source_pixel++];
-            green = frame[source_pixel++];
-            blue = frame[source_pixel++];
-#endif
-            set_pixel(row, column);
-        }
+        frame[row] = frame[row + 1];
     }
+    frame[809] = tmp_row;
 }
