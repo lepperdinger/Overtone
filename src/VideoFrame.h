@@ -18,6 +18,7 @@ public:
     using VectorSize = std::vector<double>::size_type;
     VideoFrame(FFmpeg ffmpeg,
                double gain,
+               unsigned history_speed,
                Keyboard keyboard);
     void save_frame(const unsigned &frame_index);
     bool evaluate_frame(const unsigned &frame_index);
@@ -30,8 +31,7 @@ private:
     using FrameSize = Frame::size_type;
     Frame frame;
     Row tmp_row;
-    void create_frame();
-
+    unsigned history_speed;
     FFmpeg ffmpeg;
     unsigned frame_width;
     unsigned frame_height;
@@ -41,11 +41,11 @@ private:
     unsigned char red, green, blue;
     Keyboard keyboard;
 
+    void create_frame();
     inline void set_pixel(const FrameSize &row,
                           const FrameSize &column);
 
     inline void color_map(double input_value);
-
     inline void layer_0_background();
     inline void layer_1_frame();
     inline void layer_2_history();

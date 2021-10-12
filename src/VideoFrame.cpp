@@ -11,9 +11,11 @@ using std::endl;
 
 VideoFrame::VideoFrame(FFmpeg ffmpeg,
                        double gain,
+                       unsigned history_speed,
                        Keyboard keyboard):
     frame(),
     tmp_row(),
+    history_speed(history_speed),
     ffmpeg(std::move(ffmpeg)),
     frame_width(1920),
     frame_height(1080),
@@ -33,6 +35,12 @@ VideoFrame::VideoFrame(FFmpeg ffmpeg,
     if (gain < 0)
     {
         throw std::out_of_range("The argument `gain` is negative.");
+    }
+
+    if (history_speed == 0 || history_speed > 786)
+    {
+        throw std::out_of_range("The argument `history_speed` is not within "
+                                "the interval [1, 786].");
     }
     create_frame();
     layer_0_background();
@@ -379,10 +387,12 @@ void VideoFrame::layer_4_black_keys()
 
 inline void VideoFrame::layer_2_history()
 {
-    tmp_row = frame[24];
-    for (FrameSize row = 24; row != 809; ++row)
+    for (FrameSize row = 809; row != 809 - history_speed + 1; --row)
     {
-        frame[row] = frame[row + 1];
+        frame[row - 1] = frame[row];
     }
-    frame[809] = tmp_row;
+    for (FrameSize row = 24; row != 810 - history_speed; ++row)
+    {
+        frame[row] = frame[row + history_speed];
+    }
 }

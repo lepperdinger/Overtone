@@ -183,7 +183,9 @@ int main(int argc, char *argv[]) {
             Spectrum(wave, channels, frame_rate, {74, 81}, 2500),
             Spectrum(wave, channels, frame_rate, {81, 88}, 1900)
     };
-    VideoFrame video_frame(ffmpeg, 35, keyboard);
+    double gain = 35.;
+    unsigned history_speed = 10;
+    VideoFrame video_frame(ffmpeg, gain, history_speed, keyboard);
     unsigned frame = 0;
     while (video_frame.evaluate_frame(frame))
     {
