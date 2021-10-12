@@ -3,7 +3,6 @@
 //
 #include <iostream>
 #include <iomanip>
-#include <iterator>
 #include "VideoFrame.h"
 
 using std::cout;
@@ -51,17 +50,15 @@ void VideoFrame::create_frame()
         {
             row.push_back(pixel);
         }
-        RowPointer row_pointer = std::make_shared<Row>(row);
-        frame.push_back(row_pointer);
+        frame.push_back(row);
     }
     Pixel pixel({0, 0, 0});
     Row row;
     for (RowSize column_index = 0; column_index < frame_width;
          ++column_index)
     {
-        row.push_back(pixel);
+        tmp_row.push_back(pixel);
     }
-    tmp_row = std::make_shared<Row>(row);
 }
 
 bool VideoFrame::evaluate_frame(const unsigned &frame_index)
@@ -89,9 +86,9 @@ void VideoFrame::save_frame(const unsigned &frame_index)
     for (FrameSize row = 0; row < frame_height; ++row)
         for(RowSize column = 0; column < frame_width; ++column)
         {
-            ppm_file << (*frame[row])[column][0]
-                     << (*frame[row])[column][1]
-                     << (*frame[row])[column][2];
+            ppm_file << frame[row][column][0]
+                     << frame[row][column][1]
+                     << frame[row][column][2];
         }
     ppm_file << std::flush;
 
@@ -114,7 +111,7 @@ void VideoFrame::save_frame(const unsigned &frame_index)
 inline void VideoFrame::set_pixel(const FrameSize &row,
                                   const FrameSize &column)
 {
-    (*frame[row])[column].assign({red, green, blue});
+    frame[row][column].assign({red, green, blue});
 }
 
 void VideoFrame::color_map(double input_value)
@@ -165,7 +162,7 @@ void VideoFrame::layer_0_background()
     {
         for (RowSize column = 0; column < frame_width; ++column)
         {
-            (*frame[row])[column].assign({red, green, blue});
+            frame[row][column].assign({red, green, blue});
         }
     }
 }
@@ -382,8 +379,6 @@ void VideoFrame::layer_4_black_keys()
 
 inline void VideoFrame::layer_2_history()
 {
-    FrameSize source_row;
-    RowSize source_column;
     tmp_row = frame[24];
     for (FrameSize row = 24; row != 809; ++row)
     {

@@ -26,11 +26,10 @@ private:
     using PixelSize = Pixel::size_type;
     using Row = std::vector<Pixel>;
     using RowSize = Row::size_type;
-    using RowPointer = std::shared_ptr<Row>;
-    using Frame = std::vector<RowPointer>;
+    using Frame = std::vector<Row>;
     using FrameSize = Frame::size_type;
     Frame frame;
-    RowPointer tmp_row;
+    Row tmp_row;
     void create_frame();
 
     FFmpeg ffmpeg;
