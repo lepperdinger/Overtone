@@ -34,6 +34,8 @@ public:
 
     ~WAVE() = default;
 
+    WAVE() = default;
+
     /**
      * Decodes the WAVE file `audio_file_path`.
      * @param audio_file_path path of the WAVE file

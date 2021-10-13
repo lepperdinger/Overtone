@@ -19,6 +19,8 @@ public:
     using Vector = std::vector<double>;
     using KeyRange = std::pair<unsigned char, unsigned char>;
 
+    Keyboard() = default;
+
     /**
      * constructor that evaluates `keyboard` for the first frame of the video
      * @param spectra audio spectra of the keyboard sections

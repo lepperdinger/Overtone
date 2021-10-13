@@ -5,18 +5,13 @@
 #include "OvertoneApp.h"
 #include "FFmpeg.h"
 #include "WAVE.h"
-#include "JSON.h"
 #include "Spectrum.h"
 #include "Keyboard.h"
 #include "VideoFrame.h"
 #include <string>
 #include <iostream>
-#include <string>
 #include <memory>
 #include <vector>
-#include <sstream>
-#include <iomanip>
-#include <cassert>
 #include <utility>
 #include <sys/stat.h>
 
@@ -27,25 +22,11 @@ using std::endl;
 OvertoneApp::OvertoneApp(std::vector<std::string> arguments):
     arguments(std::move(arguments))
 {
+    frame_rate = 25;
+    gain = 35.;
+    history_speed = 10;
 }
 
-void show_color_map(const Keyboard &keyboard, const double &gain)
-{
-    std::shared_ptr<std::vector<double>> keyboard_ptr(keyboard.get_keyboard());
-    for (unsigned key = 0; key != 88; ++ key)
-    {
-        keyboard_ptr->at(key) = 1 / gain / 87.0 * key;
-    }
-}
-
-/**
- * Splits the string at the last occurrence of the separator and throws a
- * runtime error if the string doesn't contain the separator.
- * @param string The spring to be split.
- * @param separator The character at which the function splits the string.
- * @return A pair that contains the string before and the string after
- *         the separator.
- */
 std::pair<std::string, std::string> OvertoneApp::split(
     const std::string &string,
     const char &separator
@@ -68,7 +49,7 @@ std::pair<std::string, std::string> OvertoneApp::split(
     }
 }
 
-void OvertoneApp::run()
+void OvertoneApp::parse_arguments()
 {
     if (arguments.size() != 3)
     {
@@ -76,17 +57,12 @@ void OvertoneApp::run()
              << endl;
         exit(1);
     }
+    ffmpeg_executable_path = arguments[1];
+    input_file_path = arguments[2];
+}
 
-    // Path of the FFmpeg executable.
-    std::string ffmpeg_executable_path(arguments[1]);
-    // Path of the input file.
-
-    std::string input_file_path(arguments[2]);
-
-    // Path of the directory that contains the input file.
-    std::string input_directory_path;
-
-    std::string input_filename_with_extension;
+void OvertoneApp::evaluate_the_file_paths()
+{
     try
     {
         input_directory_path = split(input_file_path, '/').first;
@@ -98,13 +74,6 @@ void OvertoneApp::run()
         input_directory_path = '.';
         input_filename_with_extension = input_file_path;
     }
-
-    // Name of the input file (without its file extension).
-    std::string input_filename;
-
-    // File extension of the input file.
-    std::string file_extension;
-
     try
     {
         input_filename = split(input_filename_with_extension, '.').first;
@@ -119,16 +88,19 @@ void OvertoneApp::run()
     }
 
     // Path of the audio file that will be created fy FFmpeg.
-    std::string audio_file_path = input_directory_path + '/' + input_filename
-                                  + "_-_Overtone.wav";
+    audio_file_path = input_directory_path + '/' + input_filename
+                      + "_-_Overtone.wav";
 
-    std::string frames_directory_path = input_directory_path + '/'
-                                        + input_filename
-                                        + "_-_Frames_-_Overtone";
+    frames_directory_path = input_directory_path + '/'
+                            + input_filename
+                            + "_-_Frames_-_Overtone";
 
-    std::string video_path = input_directory_path + '/' + input_filename
-                             + "_-_Overtone.mp4";
+    video_path = input_directory_path + '/' + input_filename
+                 + "_-_Overtone.mp4";
+}
 
+void OvertoneApp::create_frames_directory()
+{
     if (mkdir(frames_directory_path.c_str(), 0775))
     {
         cerr << "Error: The directory '" << frames_directory_path
@@ -137,13 +109,16 @@ void OvertoneApp::run()
              << endl;
         exit(1);
     }
-    unsigned frame_rate = 25;
-    FFmpeg ffmpeg(input_file_path,
-                  audio_file_path,
-                  frames_directory_path,
-                  video_path,
-                  ffmpeg_executable_path,
-                  frame_rate);
+}
+
+void OvertoneApp::convert_input_file_to_wav()
+{
+    ffmpeg = FFmpeg(input_file_path,
+                    audio_file_path,
+                    frames_directory_path,
+                    video_path,
+                    ffmpeg_executable_path,
+                    frame_rate);
 
      //Converting the input file to a WAVE file via FFmpeg
     try
@@ -155,15 +130,19 @@ void OvertoneApp::run()
         std::cerr << file_conversion_error.what() << std::endl;
         std::abort();
     }
+}
 
-    // Decoding the WAVE file
+void OvertoneApp::decode_wav_file()
+{
     std::cout << "\nDecoding the WAVE file...\n" << std::endl;
-    WAVE wave(audio_file_path);
+    wave = WAVE(audio_file_path);
     wave.show_file_contents();
+}
 
+void OvertoneApp::initialize_the_keyboard() {
     std::cout << std::endl;
     std::vector<unsigned> channels = {0};
-    Keyboard keyboard = {
+    keyboard = {
             Spectrum(wave, channels, frame_rate, {0, 11}, 67000),
             Spectrum(wave, channels, frame_rate, {11, 22}, 44000),
             Spectrum(wave, channels, frame_rate, {22, 33}, 29000),
@@ -173,8 +152,10 @@ void OvertoneApp::run()
             Spectrum(wave, channels, frame_rate, {74, 81}, 2500),
             Spectrum(wave, channels, frame_rate, {81, 88}, 1900)
     };
-    double gain = 35.;
-    unsigned history_speed = 10;
+}
+
+void OvertoneApp::create_the_video()
+{
     VideoFrame video_frame(ffmpeg, gain, history_speed, keyboard);
     unsigned frame = 0;
     while (video_frame.evaluate_frame(frame))
@@ -184,7 +165,17 @@ void OvertoneApp::run()
     }
     cout << endl;
 
-    ffmpeg.convert_to_mp4();
+    ffmpeg.convert_to_mp4();}
+
+void OvertoneApp::run()
+{
+    parse_arguments();
+    evaluate_the_file_paths();
+    create_frames_directory();
+    convert_input_file_to_wav();
+    decode_wav_file();
+    initialize_the_keyboard();
+    create_the_video();
 }
 
 int main(int argc, char *argv[])
@@ -196,4 +187,13 @@ int main(int argc, char *argv[])
     }
     OvertoneApp overtone_app(arguments);
     overtone_app.run();
+}
+
+void show_color_map(const Keyboard &keyboard, const double &gain)
+{
+    std::shared_ptr<std::vector<double>> keyboard_ptr(keyboard.get_keyboard());
+    for (unsigned key = 0; key != 88; ++ key)
+    {
+        keyboard_ptr->at(key) = 1 / gain / 87.0 * key;
+    }
 }

@@ -12,6 +12,10 @@
 class FFmpeg
 {
 public:
+    FFmpeg(): frame_rate()
+    {
+    }
+
     /**
      * Configures the file paths for the FFmpeg commands.
      * @param input_file_path Video or audio file.
