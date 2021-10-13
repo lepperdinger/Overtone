@@ -24,21 +24,8 @@ using std::cout;
 using std::cerr;
 using std::endl;
 
-OvertoneApp::OvertoneApp(const std::string &input_file_path,
-                         const std::string &audio_file_path,
-                         const std::string &frames_directory_path,
-                         const std::string &video_path,
-                         const std::string &ffmpeg_executable_path,
-                         unsigned frame_rate,
-                         const std::vector<unsigned> &channels,
-                         double gain):
-    ffmpeg(input_file_path,
-           audio_file_path,
-           frames_directory_path,
-           video_path,
-           ffmpeg_executable_path,
-           frame_rate),
-    wave(audio_file_path)
+OvertoneApp::OvertoneApp(std::vector<std::string> arguments):
+    arguments(std::move(arguments))
 {
 }
 
@@ -59,8 +46,10 @@ void show_color_map(const Keyboard &keyboard, const double &gain)
  * @return A pair that contains the string before and the string after
  *         the separator.
  */
-std::pair<std::string, std::string> split(const std::string &string,
-                                          const char &separator)
+std::pair<std::string, std::string> OvertoneApp::split(
+    const std::string &string,
+    const char &separator
+)
 {
     auto separator_iterator = std::find(string.crbegin(),
                                         string.crend(),
@@ -79,19 +68,20 @@ std::pair<std::string, std::string> split(const std::string &string,
     }
 }
 
-int main(int argc, char *argv[]) {
-    if (argc != 3)
+void OvertoneApp::run()
+{
+    if (arguments.size() != 3)
     {
         cerr << "Usage: Overtone <FFmpeg executable path> <input file path>"
              << endl;
-        return 1;
+        exit(1);
     }
 
     // Path of the FFmpeg executable.
-    std::string ffmpeg_executable_path(argv[1]);
+    std::string ffmpeg_executable_path(arguments[1]);
     // Path of the input file.
 
-    std::string input_file_path(argv[2]);
+    std::string input_file_path(arguments[2]);
 
     // Path of the directory that contains the input file.
     std::string input_directory_path;
@@ -125,7 +115,7 @@ int main(int argc, char *argv[]) {
     catch (const std::runtime_error &error)
     {
         cerr << "Error: The input file doesn't have a file extension." << endl;
-        return 1;
+        exit(1);
     }
 
     // Path of the audio file that will be created fy FFmpeg.
@@ -145,7 +135,7 @@ int main(int argc, char *argv[]) {
              << "' does already exist. Please remove, move, or rename this "
                 "directory."
              << endl;
-        return 1;
+        exit(1);
     }
     unsigned frame_rate = 25;
     FFmpeg ffmpeg(input_file_path,
@@ -195,4 +185,15 @@ int main(int argc, char *argv[]) {
     cout << endl;
 
     ffmpeg.convert_to_mp4();
+}
+
+int main(int argc, char *argv[])
+{
+    std::vector<std::string> arguments;
+    for (int index = 0; index != argc; ++index)
+    {
+        arguments.emplace_back(argv[index]);
+    }
+    OvertoneApp overtone_app(arguments);
+    overtone_app.run();
 }

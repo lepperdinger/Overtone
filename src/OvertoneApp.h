@@ -13,17 +13,12 @@
 
 class OvertoneApp {
 public:
-    OvertoneApp(const std::string &input_file_path,
-                const std::string &audio_file_path,
-                const std::string &frames_directory_path,
-                const std::string &video_path,
-                const std::string &ffmpeg_executable_path,
-                unsigned frame_rate,
-                const std::vector<unsigned> &channels,
-                double gain);
+    explicit OvertoneApp(std::vector<std::string> arguments);
+    void run();
 private:
-    FFmpeg ffmpeg;
-    WAVE wave;
+    std::pair<std::string, std::string> split(const std::string &string,
+                                              const char &separator);
+    std::vector<std::string> arguments;
 };
 
 
