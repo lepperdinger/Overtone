@@ -31,15 +31,8 @@ public:
            std::string frames_directory_path,
            std::string video_path,
            std::string ffmpeg_executable_path,
-           unsigned frame_rate):
-            input_file_path(std::move(input_file_path)),
-            audio_file_path(std::move(audio_file_path)),
-            frames_directory_path(std::move(frames_directory_path)),
-            video_path(std::move(video_path)),
-            ffmpeg_executable_path(std::move(ffmpeg_executable_path)),
-            frame_rate(frame_rate)
-    {
-    }
+           unsigned frame_rate);
+
     /**
      * An exception that occurs if the FFmpeg returns an exit code that is not
      * 0.
@@ -68,6 +61,8 @@ public:
         return ffmpeg_executable_path;
     }
 private:
+    static std::string add_escape_sequences(const std::string &input_string);
+
     std::string input_file_path;
     std::string audio_file_path;
     std::string frames_directory_path;

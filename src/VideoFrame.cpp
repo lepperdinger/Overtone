@@ -104,10 +104,10 @@ void VideoFrame::save_frame(const unsigned &frame_index)
     png_file_path << ffmpeg.get_frames_directory_path() << "/"
                   << std::setfill('0') << std::setw(7)
                   << frame_index << ".png";
-    std::string command = ffmpeg.get_ffmpeg_executable_path()
-                          + " -i " + ppm_file_path
-                          + " " + png_file_path.str()
-                          + " -y 1>/dev/null 2>&1";
+    std::string command = "'" + ffmpeg.get_ffmpeg_executable_path()
+                          + "' -i '" + ppm_file_path
+                          + "' '" + png_file_path.str()
+                          + "' -y 1>/dev/null 2>&1";
     if (std::system(command.c_str()))
     {
         throw FFmpeg::file_conversion_error("Conversion from '" + ppm_file_path
