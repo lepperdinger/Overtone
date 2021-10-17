@@ -27,6 +27,15 @@ private:
     static std::pair<std::string, std::string> split(const std::string &string,
                                                      const char &separator);
     void parse_arguments();
+    int parse_integer_argument(
+        std::vector<std::string>::const_iterator &current_argument
+    );
+    std::string parse_string_argument(
+        std::vector<std::string>::const_iterator &current_argument
+    );
+    double parse_double_argument(
+        std::vector<std::string>::const_iterator &current_argument
+    );
     void evaluate_the_file_paths();
     void create_frames_directory();
     void convert_input_file_to_wav();
@@ -71,6 +80,8 @@ private:
     FFmpeg ffmpeg;
 
     Keyboard keyboard;
+
+    std::vector<unsigned> channels;
 };
 
 

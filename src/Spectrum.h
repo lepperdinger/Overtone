@@ -29,7 +29,7 @@ public:
      * frame is smaller than minimum_samples, the range of an audio frame gets
      * extended on both sides.
      * @param wave WAVE object that contains the PCM signal.
-     * @param channels selected channels
+     * @param channels selected channels (all channels if empty)
      * @param frame_rate video frame rate
      * @param key_range key range
      * @param minimum_samples minimum audio samples per video frame

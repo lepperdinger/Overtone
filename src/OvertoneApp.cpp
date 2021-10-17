@@ -14,6 +14,7 @@
 #include <vector>
 #include <utility>
 #include <sys/stat.h>
+#include <sstream>
 
 using std::cout;
 using std::cerr;
@@ -25,6 +26,7 @@ OvertoneApp::OvertoneApp(std::vector<std::string> arguments):
     frame_rate = 25;
     gain = 35.;
     history_speed = 10;
+    ffmpeg_executable_path = "ffmpeg";
 }
 
 std::pair<std::string, std::string> OvertoneApp::split(
@@ -51,14 +53,146 @@ std::pair<std::string, std::string> OvertoneApp::split(
 
 void OvertoneApp::parse_arguments()
 {
-    if (arguments.size() != 3)
+    std::string usage = "Overtone [options]... <input file path>";
+    std::stringstream descriptions_stream;
+    descriptions_stream
+        << "Optional arguments:\n"
+           "  -c  <channel>                 use a specific audio channel "
+                                           "instead of all\n"
+           "                                channels (e.g., 0)\n"
+           "  -f  <frame rate>              frame rate in frames per seconds "
+                                           "(default = " << frame_rate << ")\n"
+           "  -F  <ffmpeg executable path>  path of the FFmpeg executable\n"
+           "  -g  <gain>                    gain (default = " << gain << ")\n"
+           "  -s  <history speed>           speed of the history in lines per "
+                                           "frame";
+    std::string descriptions = descriptions_stream.str();
+    if (arguments.size() == 1)
     {
-        cerr << "Usage: Overtone <FFmpeg executable path> <input file path>"
-             << endl;
-        exit(1);
+        cout << usage << endl << endl;
+        cout << descriptions << endl << endl;
+        std::exit(1);
     }
-    ffmpeg_executable_path = arguments[1];
-    input_file_path = arguments[2];
+    std::vector<std::string> positional_arguments;
+    for (auto argument = ++arguments.cbegin(); argument != arguments.cend();
+         ++argument)
+    {
+        if (*argument == "-c")
+        {
+            unsigned channel = parse_integer_argument(argument);
+            channels = {channel};
+        }
+        else if (*argument == "-f")
+        {
+            frame_rate = parse_integer_argument(argument);
+        }
+        else if (*argument == "-F")
+        {
+            ffmpeg_executable_path = parse_string_argument(argument);
+        }
+        else if (*argument == "-g")
+        {
+            gain = parse_double_argument(argument);
+        }
+        else if (*argument == "-s")
+        {
+            history_speed = parse_integer_argument(argument);
+        }
+        else
+        {
+            positional_arguments.push_back(*argument);
+        }
+    }
+    unsigned number_of_positional_arguments = 1;
+    if (positional_arguments.size() != number_of_positional_arguments)
+    {
+        cout << "Error: the following arguments are required: "
+             << "<input file path>" << endl;
+        std::exit(1);
+    }
+    else
+    {
+        input_file_path.assign(positional_arguments[0]);
+    }
+}
+
+std::string OvertoneApp::parse_string_argument(
+    std::vector<std::string>::const_iterator &current_argument
+)
+{
+    std::string parsed_string;
+    std::string flag = *current_argument++;
+    std::string error_message = "Error: current_argument "
+                                + flag
+                                + ": invalid string value";
+    if (current_argument == arguments.cend())
+    {
+        cout << error_message << endl;
+        std::exit(1);
+    }
+    else
+    {
+        parsed_string = *current_argument;
+    }
+    return parsed_string;
+}
+
+int OvertoneApp::parse_integer_argument(
+    std::vector<std::string>::const_iterator &current_argument
+)
+{
+    int parsed_value;
+    std::string flag = *current_argument++;
+    std::string error_message = "Error: current_argument "
+                                + flag
+                                + ": invalid integer value";
+    if (current_argument == arguments.cend())
+    {
+        cout << error_message << endl;
+        std::exit(1);
+    }
+    else
+    {
+        try
+        {
+            parsed_value = std::stoi(*current_argument);
+        }
+        catch (const std::invalid_argument &invalid_argument)
+        {
+            cout << error_message << endl;
+            std::exit(1);
+        }
+    }
+    return parsed_value;
+}
+
+double OvertoneApp::parse_double_argument(
+    std::vector<std::string>::const_iterator &current_argument
+)
+{
+    double parsed_value;
+    std::string flag = *current_argument++;
+    std::string error_message = "Error: current_argument "
+                                + flag
+                                + ": invalid double value";
+    if (current_argument == arguments.cend())
+    {
+        cout << error_message << endl;
+        std::exit(1);
+    }
+    else
+    {
+        try
+        {
+            parsed_value = std::stod(*current_argument);
+        }
+        catch (const std::invalid_argument &invalid_argument)
+        {
+            cout << error_message << endl;
+            std::exit(1);
+        }
+    }
+    return parsed_value;
 }
 
 void OvertoneApp::evaluate_the_file_paths()
@@ -127,21 +261,20 @@ void OvertoneApp::convert_input_file_to_wav()
     }
     catch(const FFmpeg::file_conversion_error &file_conversion_error)
     {
-        std::cerr << file_conversion_error.what() << std::endl;
+        cout << file_conversion_error.what() << endl;
         std::abort();
     }
 }
 
 void OvertoneApp::decode_wav_file()
 {
-    std::cout << "\nDecoding the WAVE file...\n" << std::endl;
+    cout << "\nDecoding the WAVE file...\n" << endl;
     wave = WAVE(audio_file_path);
     wave.show_file_contents();
 }
 
 void OvertoneApp::initialize_the_keyboard() {
-    std::cout << std::endl;
-    std::vector<unsigned> channels = {0};
+    cout << endl;
     keyboard = {
             Spectrum(wave, channels, frame_rate, {0, 11}, 67000),
             Spectrum(wave, channels, frame_rate, {11, 22}, 44000),

@@ -17,7 +17,6 @@ Spectrum::Spectrum(const WAVE &wave,
         key_range(std::move(key_range)),
         minimum_samples(minimum_samples),
         time_size(wave.get_signal()[0]->size()),
-        channels(channels),
         frequencies(std::make_shared<Vector>())
 {
     if (key_range.first > 87 || key_range.second > 88
@@ -28,7 +27,7 @@ Spectrum::Spectrum(const WAVE &wave,
     }
     if (wave.get_sample_rate() % frame_rate)
     {
-        throw std::invalid_argument("sample rate % evaluate_frame rate != 0");
+        throw std::invalid_argument("sample rate % frame rate != 0");
     }
     VectorSize number_of_channels = wave.get_signal().size();
     for (auto channel : channels)
@@ -45,6 +44,17 @@ Spectrum::Spectrum(const WAVE &wave,
     if (unique_end != unique_channels.cend())
     {
         throw std::invalid_argument("The elements of channels are not unique.");
+    }
+    if (channels.empty())
+    {
+        for (unsigned channel = 0; channel != number_of_channels; ++channel)
+        {
+            this->channels.push_back(channel);
+        }
+    }
+    else
+    {
+        this->channels = channels;
     }
     evaluate_frame();
 }
