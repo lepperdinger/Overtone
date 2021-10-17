@@ -43,7 +43,7 @@ void FFmpeg::convert_to_mp4()
                           + "' -pattern_type glob -framerate "
                           + std::to_string(frame_rate)
                           + " -i '"
-                          + add_escape_sequences(frames_directory_path)
+                          + add_backslashes(frames_directory_path)
                           + "/*.png'"
                           + " -i '" + audio_file_path
                           + "' -b:v 5000k '" + video_path + "'";
@@ -57,7 +57,7 @@ void FFmpeg::convert_to_mp4()
     }
 }
 
-std::string FFmpeg::add_escape_sequences(const std::string &input_string)
+std::string FFmpeg::add_backslashes(const std::string &input_string)
 {
     std::string accumulator;
     for (const char &character : input_string)
