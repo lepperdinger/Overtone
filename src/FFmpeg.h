@@ -61,7 +61,9 @@ public:
         return ffmpeg_executable_path;
     }
 private:
-    static std::string add_backslashes(const std::string &input_string);
+    static std::string add_backslashes_if_necessary(
+        const std::string &input_string
+    );
 
     std::string input_file_path;
     std::string audio_file_path;

@@ -4,6 +4,7 @@
 
 #include "FFmpeg.h"
 #include <iostream>
+#include <algorithm>
 
 FFmpeg::FFmpeg(std::string input_file_path,
                std::string audio_file_path,
@@ -43,7 +44,7 @@ void FFmpeg::convert_to_mp4()
                           + "' -pattern_type glob -framerate "
                           + std::to_string(frame_rate)
                           + " -i '"
-                          + add_backslashes(frames_directory_path)
+                          + add_backslashes_if_necessary(frames_directory_path)
                           + "/*.png'"
                           + " -i '" + audio_file_path
                           + "' -b:v 5000k '" + video_path + "'";
@@ -57,12 +58,23 @@ void FFmpeg::convert_to_mp4()
     }
 }
 
-std::string FFmpeg::add_backslashes(const std::string &input_string)
+std::string FFmpeg::add_backslashes_if_necessary(
+    const std::string &input_string
+)
 {
     std::string accumulator;
+    std::string bad_characters(" \n\t\\[]{}():;\"'<>?|=!$^&*`");
     for (const char &character : input_string)
     {
-        accumulator += std::string("\\") + character;
+        auto search_result = std::find(bad_characters.cbegin(),
+                                       bad_characters.cend(),
+                                       character);
+        bool bad_character(search_result != bad_characters.cend());
+        if (bad_character)
+        {
+            accumulator += std::string("\\");
+        }
+        accumulator += character;
     }
     return accumulator;
 }
