@@ -98,6 +98,13 @@ void OvertoneApp::parse_arguments()
         {
             history_speed = parse_integer_argument(argument);
         }
+        else if ((*argument)[0] == '-')
+        {
+            std::string error_message = "Error: unrecognized argument: "
+                                        + *argument;
+            cerr << error_message << endl;
+            exit(1);
+        }
         else
         {
             positional_arguments.push_back(*argument);
@@ -122,7 +129,7 @@ std::string OvertoneApp::parse_string_argument(
 {
     std::string parsed_string;
     std::string flag = *current_argument++;
-    std::string error_message = "Error: current_argument "
+    std::string error_message = "Error: argument "
                                 + flag
                                 + ": invalid string value";
     if (current_argument == arguments.cend())
@@ -143,7 +150,7 @@ int OvertoneApp::parse_integer_argument(
 {
     int parsed_value;
     std::string flag = *current_argument++;
-    std::string error_message = "Error: current_argument "
+    std::string error_message = "Error: argument "
                                 + flag
                                 + ": invalid integer value";
     if (current_argument == arguments.cend())
@@ -172,7 +179,7 @@ double OvertoneApp::parse_double_argument(
 {
     double parsed_value;
     std::string flag = *current_argument++;
-    std::string error_message = "Error: current_argument "
+    std::string error_message = "Error: argument "
                                 + flag
                                 + ": invalid double value";
     if (current_argument == arguments.cend())
