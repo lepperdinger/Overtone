@@ -65,7 +65,8 @@ void OvertoneApp::parse_arguments()
            "  -F  <ffmpeg executable path>  path of the FFmpeg executable\n"
            "  -g  <gain>                    gain (default = " << gain << ")\n"
            "  -s  <history speed>           speed of the history in lines per "
-                                           "frame";
+                                           "frame (default = " << history_speed
+                                            << ")";
     std::string descriptions = descriptions_stream.str();
     if (arguments.size() == 1)
     {
@@ -79,24 +80,31 @@ void OvertoneApp::parse_arguments()
     {
         if (*argument == "-c")
         {
-            unsigned channel = parse_integer_argument(argument);
+            unsigned channel = parse_argument(argument,
+                                              &OvertoneApp::to_unsigned);
             channels = {channel};
         }
         else if (*argument == "-f")
         {
-            frame_rate = parse_integer_argument(argument);
+            frame_rate = parse_argument(argument, &OvertoneApp::to_unsigned);
         }
         else if (*argument == "-F")
         {
-            ffmpeg_executable_path = parse_string_argument(argument);
+            ffmpeg_executable_path = parse_argument(argument,
+                                                    &OvertoneApp::to_string);
         }
         else if (*argument == "-g")
         {
-            gain = parse_double_argument(argument);
+            gain = parse_argument(argument, &OvertoneApp::to_double);
+            if (gain <= 0)
+            {
+                cerr << "Error: The gain has to be a positive number." << endl;
+                exit(1);
+            }
         }
         else if (*argument == "-s")
         {
-            history_speed = parse_integer_argument(argument);
+            history_speed = parse_argument(argument, &OvertoneApp::to_unsigned);
         }
         else if ((*argument)[0] == '-')
         {
@@ -123,36 +131,17 @@ void OvertoneApp::parse_arguments()
     }
 }
 
-std::string OvertoneApp::parse_string_argument(
-    std::vector<std::string>::const_iterator &current_argument
+template <typename T>
+T OvertoneApp::parse_argument(
+    std::vector<std::string>::const_iterator &current_argument,
+    T (*conversion)(const std::string &)
 )
 {
-    std::string parsed_string;
+    T parsed_value;
     std::string flag = *current_argument++;
     std::string error_message = "Error: argument "
                                 + flag
-                                + ": invalid string value";
-    if (current_argument == arguments.cend())
-    {
-        cout << error_message << endl;
-        std::exit(1);
-    }
-    else
-    {
-        parsed_string = *current_argument;
-    }
-    return parsed_string;
-}
-
-int OvertoneApp::parse_integer_argument(
-    std::vector<std::string>::const_iterator &current_argument
-)
-{
-    int parsed_value;
-    std::string flag = *current_argument++;
-    std::string error_message = "Error: argument "
-                                + flag
-                                + ": invalid integer value";
+                                + ": invalid value";
     if (current_argument == arguments.cend())
     {
         cout << error_message << endl;
@@ -162,36 +151,7 @@ int OvertoneApp::parse_integer_argument(
     {
         try
         {
-            parsed_value = std::stoi(*current_argument);
-        }
-        catch (const std::invalid_argument &invalid_argument)
-        {
-            cout << error_message << endl;
-            std::exit(1);
-        }
-    }
-    return parsed_value;
-}
-
-double OvertoneApp::parse_double_argument(
-    std::vector<std::string>::const_iterator &current_argument
-)
-{
-    double parsed_value;
-    std::string flag = *current_argument++;
-    std::string error_message = "Error: argument "
-                                + flag
-                                + ": invalid double value";
-    if (current_argument == arguments.cend())
-    {
-        cout << error_message << endl;
-        std::exit(1);
-    }
-    else
-    {
-        try
-        {
-            parsed_value = std::stod(*current_argument);
+            parsed_value = (*conversion)(*current_argument);
         }
         catch (const std::invalid_argument &invalid_argument)
         {

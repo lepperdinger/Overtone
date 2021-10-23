@@ -27,7 +27,8 @@ Spectrum::Spectrum(const WAVE &wave,
     }
     if (wave.get_sample_rate() % frame_rate)
     {
-        throw std::invalid_argument("sample rate % frame rate != 0");
+        throw std::invalid_argument("This frame rate is not available. "
+                                    "(sample rate % frame rate != 0)");
     }
     VectorSize number_of_channels = wave.get_signal().size();
     for (auto channel : channels)

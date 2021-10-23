@@ -27,15 +27,15 @@ private:
     static std::pair<std::string, std::string> split(const std::string &string,
                                                      const char &separator);
     void parse_arguments();
-    int parse_integer_argument(
-        std::vector<std::string>::const_iterator &current_argument
+    template <typename T>
+    T parse_argument(
+        std::vector<std::string>::const_iterator &current_argument,
+        T (*conversion)(const std::string &)
     );
-    std::string parse_string_argument(
-        std::vector<std::string>::const_iterator &current_argument
-    );
-    double parse_double_argument(
-        std::vector<std::string>::const_iterator &current_argument
-    );
+    static unsigned to_unsigned(const std::string &s) { return std::stoul(s); };
+    static double to_double(const std::string &s) { return std::stod(s); };
+    static std::string to_string(const std::string &s) { return s; };
+
     void evaluate_the_file_paths();
     void create_frames_directory();
     void convert_input_file_to_wav();
