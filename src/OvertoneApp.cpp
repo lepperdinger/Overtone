@@ -82,11 +82,23 @@ void OvertoneApp::parse_arguments()
         {
             unsigned channel = parse_argument(argument,
                                               &OvertoneApp::to_unsigned);
+            if ((*argument)[0] == '-')
+            {
+                cerr << "Error: argument -c : has to be a positive number"
+                     << endl;
+                exit(1);
+            }
             channels = {channel};
         }
         else if (*argument == "-f")
         {
             frame_rate = parse_argument(argument, &OvertoneApp::to_unsigned);
+            if ((*argument)[0] == '-' || frame_rate == 0)
+            {
+                cerr << "Error: argument -f : has to be a positive number"
+                     << endl;
+                exit(1);
+            }
         }
         else if (*argument == "-F")
         {
@@ -96,15 +108,22 @@ void OvertoneApp::parse_arguments()
         else if (*argument == "-g")
         {
             gain = parse_argument(argument, &OvertoneApp::to_double);
-            if (gain <= 0)
+            if ((*argument)[0] == '-')
             {
-                cerr << "Error: The gain has to be a positive number." << endl;
+                cerr << "Error: argument -g : has to be a positive number"
+                     << endl;
                 exit(1);
             }
         }
         else if (*argument == "-s")
         {
             history_speed = parse_argument(argument, &OvertoneApp::to_unsigned);
+            if ((*argument)[0] == '-' || history_speed == 0)
+            {
+                cerr << "Error: argument -s : has to be a positive number"
+                     << endl;
+                exit(1);
+            }
         }
         else if ((*argument)[0] == '-')
         {
