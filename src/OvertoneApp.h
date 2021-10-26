@@ -30,7 +30,10 @@ private:
     template <typename T>
     T parse_argument(
         std::vector<std::string>::const_iterator &current_argument,
-        T (*conversion)(const std::string &)
+        T (*conversion)(const std::string &),
+            bool is_positive,
+            bool is_nonzero,
+            bool is_integer
     );
     static unsigned to_unsigned(const std::string &s) { return std::stoul(s); };
     static double to_double(const std::string &s) { return std::stod(s); };

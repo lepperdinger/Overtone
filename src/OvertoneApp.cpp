@@ -81,49 +81,43 @@ void OvertoneApp::parse_arguments()
         if (*argument == "-c")
         {
             unsigned channel = parse_argument(argument,
-                                              &OvertoneApp::to_unsigned);
-            if ((*argument)[0] == '-')
-            {
-                cerr << "Error: argument -c : has to be a positive number"
-                     << endl;
-                exit(1);
-            }
+                                              &OvertoneApp::to_unsigned,
+                                              true,
+                                              false,
+                                              true);
             channels = {channel};
         }
         else if (*argument == "-f")
         {
-            frame_rate = parse_argument(argument, &OvertoneApp::to_unsigned);
-            if ((*argument)[0] == '-' || frame_rate == 0)
-            {
-                cerr << "Error: argument -f : has to be a positive number"
-                     << endl;
-                exit(1);
-            }
+            frame_rate = parse_argument(argument,
+                                        &OvertoneApp::to_unsigned,
+                                        true,
+                                        true,
+                                        true);
         }
         else if (*argument == "-F")
         {
             ffmpeg_executable_path = parse_argument(argument,
-                                                    &OvertoneApp::to_string);
+                                                    &OvertoneApp::to_string,
+                                                    false,
+                                                    false,
+                                                    false);
         }
         else if (*argument == "-g")
         {
-            gain = parse_argument(argument, &OvertoneApp::to_double);
-            if ((*argument)[0] == '-')
-            {
-                cerr << "Error: argument -g : has to be a positive number"
-                     << endl;
-                exit(1);
-            }
+            gain = parse_argument(argument,
+                                  &OvertoneApp::to_double,
+                                  true,
+                                  false,
+                                  false);
         }
         else if (*argument == "-s")
         {
-            history_speed = parse_argument(argument, &OvertoneApp::to_unsigned);
-            if ((*argument)[0] == '-' || history_speed == 0)
-            {
-                cerr << "Error: argument -s : has to be a positive number"
-                     << endl;
-                exit(1);
-            }
+            history_speed = parse_argument(argument,
+                                           &OvertoneApp::to_unsigned,
+                                           true,
+                                           true,
+                                           true);
         }
         else if ((*argument)[0] == '-')
         {
@@ -153,7 +147,10 @@ void OvertoneApp::parse_arguments()
 template <typename T>
 T OvertoneApp::parse_argument(
     std::vector<std::string>::const_iterator &current_argument,
-    T (*conversion)(const std::string &)
+    T (*conversion)(const std::string &),
+    bool is_positive,
+    bool is_nonzero,
+    bool is_integer
 )
 {
     T parsed_value;
@@ -176,6 +173,35 @@ T OvertoneApp::parse_argument(
         {
             cout << error_message << endl;
             std::exit(1);
+        }
+        if (is_integer)
+        {
+            auto search_result = std::find(current_argument->cbegin(),
+                                           current_argument->cend(),
+                                           '.');
+            if (search_result != current_argument->cend())
+            {
+                cerr << "Error: argument "
+                     << flag
+                     << " : The value has to be an integer."
+                     << endl;
+                exit(1);
+            }
+        }        if (is_positive && (*current_argument)[0] == '-')
+        {
+            cerr << "Error: argument "
+                 << flag
+                 << " : The value has to be a positive number."
+                 << endl;
+            exit(1);
+        }
+        if (is_nonzero && (*current_argument)[0] == '0')
+        {
+            cerr << "Error: argument "
+                 << flag
+                 << " : The value has to be nonzero."
+                 << endl;
+            exit(1);
         }
     }
     return parsed_value;
