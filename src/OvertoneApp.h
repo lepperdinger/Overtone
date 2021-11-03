@@ -19,14 +19,33 @@ private:
     /**
      * Splits the string at the last occurrence of the separator and throws a
      * runtime error if the string doesn't contain the separator.
-     * @param string The spring to be split.
-     * @param separator The character at which the function splits the string.
-     * @return A pair that contains the string before and the string after
-     *         the separator.
+     * @param string the spring to be split
+     * @param separator the character at which the function splits the string
+     * @return a pair that contains the string before and the string after
+     *         the separator
      */
     static std::pair<std::string, std::string> split(const std::string &string,
                                                      const char &separator);
+
+    /**
+     * Parses the command line arguments.
+     */
     void parse_arguments();
+
+    /**
+     * Parses the command line flag pattern -<flag> <value>.
+     * @tparam T the type into which the value will be converted
+     * @param current_argument iterator to the string that contains the flag
+     *                         ("-<flag>"), the following iterator has to be an
+     *                         iterator to the string that contains the value
+     *                         ("<value>")
+     * @param conversion function that converts the value to the type T
+     * @param is_positive if true, checks if value > 0
+     * @param is_nonzero if true, checks if value != 0
+     * @param is_integer if true, checks if the value isn't a floating point
+     *                   number
+     * @return the parsed and converted value of the flag
+     */
     template <typename T>
     T parse_argument(
         std::vector<std::string>::const_iterator &current_argument,
@@ -46,6 +65,7 @@ private:
     void initialize_the_keyboard();
     void create_the_video();
 
+    // command line arguments
     std::vector<std::string> arguments;
 
     // path of the FFmpeg executable
@@ -68,22 +88,31 @@ private:
     // path of the audio file that will be created fy FFmpeg
     std::string audio_file_path;
 
+    // directory into which the frames will be saved
     std::string frames_directory_path;
 
+    // path of the final video
     std::string video_path;
 
+    // video frame rate
     unsigned frame_rate;
 
+    // gain
     double gain;
 
+    // speed of the history in lines per video frame
     unsigned history_speed;
 
+    // decoded WAVE file
     WAVE wave;
 
+    // FFmpeg
     FFmpeg ffmpeg;
 
+    // audio spectrum projected onto the 88 keys of the keyboard
     Keyboard keyboard;
 
+    // indices of the audio channels used for the analysis
     std::vector<unsigned> channels;
 };
 
