@@ -259,12 +259,20 @@ void OvertoneApp::create_frames_directory()
 
 void OvertoneApp::convert_input_file_to_wav()
 {
-    ffmpeg = FFmpeg(input_file_path,
-                    audio_file_path,
-                    frames_directory_path,
-                    video_path,
-                    ffmpeg_executable_path,
-                    frame_rate);
+    try
+    {
+        ffmpeg = FFmpeg(input_file_path,
+                        audio_file_path,
+                        frames_directory_path,
+                        video_path,
+                        ffmpeg_executable_path,
+                        frame_rate);
+    }
+    catch (const std::exception &exception)
+    {
+        cerr << "Overtone: Error: " << exception.what() << endl;
+        exit(1);
+    }
 
      //Converting the input file to a WAVE file via FFmpeg
     try
@@ -287,28 +295,47 @@ void OvertoneApp::decode_wav_file()
 
 void OvertoneApp::initialize_the_keyboard() {
     cout << endl;
-    keyboard = {
-            Spectrum(wave, channels, frame_rate, {0, 11}, 67000),
-            Spectrum(wave, channels, frame_rate, {11, 22}, 44000),
-            Spectrum(wave, channels, frame_rate, {22, 33}, 29000),
-            Spectrum(wave, channels, frame_rate, {33, 46}, 15500),
-            Spectrum(wave, channels, frame_rate, {46, 56}, 8500),
-            Spectrum(wave, channels, frame_rate, {56, 74}, 5000),
-            Spectrum(wave, channels, frame_rate, {74, 81}, 2500),
-            Spectrum(wave, channels, frame_rate, {81, 88}, 1900)
-    };
+    try
+    {
+        keyboard = {
+                Spectrum(wave, channels, frame_rate, {0, 11}, 67000),
+                Spectrum(wave, channels, frame_rate, {11, 22}, 44000),
+                Spectrum(wave, channels, frame_rate, {22, 33}, 29000),
+                Spectrum(wave, channels, frame_rate, {33, 46}, 15500),
+                Spectrum(wave, channels, frame_rate, {46, 56}, 8500),
+                Spectrum(wave, channels, frame_rate, {56, 74}, 5000),
+                Spectrum(wave, channels, frame_rate, {74, 81}, 2500),
+                Spectrum(wave, channels, frame_rate, {81, 88}, 1900)
+        };
+    }
+    catch (const std::exception &exception)
+    {
+        cerr << "Overtone: Error: " << exception.what() << endl;
+        exit(1);
+    }
 }
 
 void OvertoneApp::create_the_video()
 {
-    VideoFrame video_frame(ffmpeg, gain, history_speed, keyboard);
-    unsigned frame = 0;
-    while (video_frame.evaluate_frame(frame))
+    try
     {
-        cout << "Current frame: " << frame << "          \r" << std::flush;
-        ++frame;
+        VideoFrame video_frame = VideoFrame(ffmpeg,
+                                            gain,
+                                            history_speed,
+                                            keyboard);
+        unsigned frame = 0;
+        while (video_frame.evaluate_frame(frame))
+        {
+            cout << "Current frame: " << frame << "          \r" << std::flush;
+            ++frame;
+        }
+        cout << endl;
     }
-    cout << endl;
+    catch (const std::exception &exception)
+    {
+        cerr << "Overtone: Error: " << exception.what() << endl;
+        exit(1);
+    }
 
     ffmpeg.convert_to_mp4();}
 
