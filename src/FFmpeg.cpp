@@ -10,15 +10,25 @@ FFmpeg::FFmpeg(std::string input_file_path,
                std::string audio_file_path,
                std::string frames_directory_path,
                std::string video_path,
-               std::string ffmpeg_executable_path,
+               const std::string &ffmpeg_executable_path,
                unsigned frame_rate):
         input_file_path(std::move(input_file_path)),
         audio_file_path(std::move(audio_file_path)),
         frames_directory_path(std::move(frames_directory_path)),
         video_path(std::move(video_path)),
-        ffmpeg_executable_path(std::move(ffmpeg_executable_path)),
         frame_rate(frame_rate)
 {
+    std::string command = ffmpeg_executable_path + " -version";
+    std::cout << command << std::endl;
+    if (std::system(command.c_str()))
+    {
+        throw std::invalid_argument("The file path of the FFmpeg executable is "
+                                    "invalid.");
+    }
+    else
+    {
+        this->ffmpeg_executable_path = ffmpeg_executable_path;
+    }
 }
 
 

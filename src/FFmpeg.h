@@ -30,7 +30,7 @@ public:
            std::string audio_file_path,
            std::string frames_directory_path,
            std::string video_path,
-           std::string ffmpeg_executable_path,
+           const std::string &ffmpeg_executable_path,
            unsigned frame_rate);
 
     /**
