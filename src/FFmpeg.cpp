@@ -18,8 +18,7 @@ FFmpeg::FFmpeg(std::string input_file_path,
         video_path(std::move(video_path)),
         frame_rate(frame_rate)
 {
-    std::string command = ffmpeg_executable_path + " -version";
-    std::cout << command << std::endl;
+    std::string command = ffmpeg_executable_path + " -version 1>/dev/null";
     if (std::system(command.c_str()))
     {
         throw std::invalid_argument("The file path of the FFmpeg executable is "
@@ -36,8 +35,7 @@ void FFmpeg::convert_to_wave()
 {
     std::string command = "'" + ffmpeg_executable_path
                           + "' -y -i '" + input_file_path
-                          + "' '" + audio_file_path + "'";
-    std::cout << command << std::endl;
+                          + "' '" + audio_file_path + "' 2>/dev/null";
     int exit_code = std::system(command.c_str());
     if (exit_code)
     {
@@ -57,8 +55,7 @@ void FFmpeg::convert_to_mp4()
                           + add_backslashes_if_necessary(frames_directory_path)
                           + "/*.png'"
                           + " -i '" + audio_file_path
-                          + "' -b:v 5000k '" + video_path + "'";
-    std::cout << command << std::endl;
+                          + "' -b:v 5000k '" + video_path + "' 2>/dev/null";
     int exit_code = std::system(command.c_str());
     if (exit_code)
     {

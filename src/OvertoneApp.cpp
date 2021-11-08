@@ -288,13 +288,10 @@ void OvertoneApp::convert_input_file_to_wav()
 
 void OvertoneApp::decode_wav_file()
 {
-    cout << "\nDecoding the WAVE file...\n" << endl;
     wave = WAVE(audio_file_path);
-    wave.show_file_contents();
 }
 
 void OvertoneApp::initialize_the_keyboard() {
-    cout << endl;
     try
     {
         keyboard = {
@@ -326,7 +323,7 @@ void OvertoneApp::create_the_video()
         unsigned frame = 0;
         while (video_frame.evaluate_frame(frame))
         {
-            cout << "Current frame: " << frame << "          \r" << std::flush;
+            cout << "current frame: " << frame << "          \r" << std::flush;
             ++frame;
         }
         cout << endl;
