@@ -59,11 +59,13 @@ private:
     static std::string to_string(const std::string &s) { return s; };
 
     void evaluate_the_file_paths();
+    void create_temporary_directory();
     void create_frames_directory();
     void convert_input_file_to_wav();
     void decode_wav_file();
     void initialize_the_keyboard();
     void create_the_video();
+    void delete_temporary_files();
 
     // command line arguments
     std::vector<std::string> arguments;
@@ -114,6 +116,9 @@ private:
 
     // indices of the audio channels used for the analysis
     std::vector<unsigned> channels;
+
+    // path of the temporary directory
+    std::string temporary_directory;
 };
 
 

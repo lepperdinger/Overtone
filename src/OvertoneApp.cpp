@@ -72,7 +72,7 @@ void OvertoneApp::parse_arguments()
     {
         cout << usage << endl << endl;
         cout << descriptions << endl << endl;
-        std::exit(1);
+        std::exit(EXIT_FAILURE);
     }
     std::vector<std::string> positional_arguments;
     for (auto argument = ++arguments.cbegin(); argument != arguments.cend();
@@ -124,7 +124,7 @@ void OvertoneApp::parse_arguments()
             std::string error_message = "Error: unrecognized argument: "
                                         + *argument;
             cerr << error_message << endl;
-            exit(1);
+            std::exit(EXIT_FAILURE);
         }
         else
         {
@@ -136,7 +136,7 @@ void OvertoneApp::parse_arguments()
     {
         cout << "Error: the following arguments are required: "
              << "<input file path>" << endl;
-        std::exit(1);
+        std::exit(EXIT_FAILURE);
     }
     else
     {
@@ -161,7 +161,7 @@ T OvertoneApp::parse_argument(
     if (current_argument == arguments.cend())
     {
         cout << error_message << endl;
-        std::exit(1);
+        std::exit(EXIT_FAILURE);
     }
     else
     {
@@ -172,7 +172,7 @@ T OvertoneApp::parse_argument(
         catch (const std::invalid_argument &invalid_argument)
         {
             cout << error_message << endl;
-            std::exit(1);
+            std::exit(EXIT_FAILURE);
         }
         if (is_integer)
         {
@@ -185,7 +185,7 @@ T OvertoneApp::parse_argument(
                      << flag
                      << " : The value has to be an integer."
                      << endl;
-                exit(1);
+                std::exit(EXIT_FAILURE);
             }
         }        if (is_positive && (*current_argument)[0] == '-')
         {
@@ -193,7 +193,7 @@ T OvertoneApp::parse_argument(
                  << flag
                  << " : The value has to be a positive number."
                  << endl;
-            exit(1);
+            std::exit(EXIT_FAILURE);
         }
         if (is_nonzero && (*current_argument)[0] == '0')
         {
@@ -201,10 +201,25 @@ T OvertoneApp::parse_argument(
                  << flag
                  << " : The value has to be nonzero."
                  << endl;
-            exit(1);
+            std::exit(EXIT_FAILURE);
         }
     }
     return parsed_value;
+}
+
+void OvertoneApp::create_temporary_directory()
+{
+    char directory_template[] = "/tmp/Overtone.XXXXXX";
+    char *tmp_directory = mkdtemp(directory_template);
+    if (tmp_directory == nullptr)
+    {
+        cerr << "The creation of the temporary directory failed." << endl;
+        std::exit(EXIT_FAILURE);
+    }
+    else
+    {
+        temporary_directory = std::string(tmp_directory);
+    }
 }
 
 void OvertoneApp::evaluate_the_file_paths()
@@ -230,16 +245,13 @@ void OvertoneApp::evaluate_the_file_paths()
     catch (const std::runtime_error &error)
     {
         cerr << "Error: The input file doesn't have a file extension." << endl;
-        exit(1);
+        std::exit(EXIT_FAILURE);
     }
 
     // Path of the audio file that will be created fy FFmpeg.
-    audio_file_path = input_directory_path + '/' + input_filename
-                      + "_-_Overtone.wav";
+    audio_file_path = temporary_directory + "/audio.wav";
 
-    frames_directory_path = input_directory_path + '/'
-                            + input_filename
-                            + "_-_Frames_-_Overtone";
+    frames_directory_path = temporary_directory + "/frames";
 
     video_path = input_directory_path + '/' + input_filename
                  + "_-_Overtone.mp4";
@@ -253,7 +265,7 @@ void OvertoneApp::create_frames_directory()
              << "' does already exist. Please remove, move, or rename this "
                 "directory."
              << endl;
-        exit(1);
+        std::exit(EXIT_FAILURE);
     }
 }
 
@@ -271,7 +283,7 @@ void OvertoneApp::convert_input_file_to_wav()
     catch (const std::exception &exception)
     {
         cerr << "Overtone: Error: " << exception.what() << endl;
-        exit(1);
+        std::exit(EXIT_FAILURE);
     }
 
      //Converting the input file to a WAVE file via FFmpeg
@@ -308,7 +320,7 @@ void OvertoneApp::initialize_the_keyboard() {
     catch (const std::exception &exception)
     {
         cerr << "Overtone: Error: " << exception.what() << endl;
-        exit(1);
+        std::exit(EXIT_FAILURE);
     }
 }
 
@@ -331,20 +343,29 @@ void OvertoneApp::create_the_video()
     catch (const std::exception &exception)
     {
         cerr << "Overtone: Error: " << exception.what() << endl;
-        exit(1);
+        std::exit(EXIT_FAILURE);
     }
 
-    ffmpeg.convert_to_mp4();}
+    ffmpeg.convert_to_mp4();
+}
+
+void OvertoneApp::delete_temporary_files()
+{
+    std::string command = "rm -r " + temporary_directory;
+    std::system(command.c_str());
+}
 
 void OvertoneApp::run()
 {
     parse_arguments();
+    create_temporary_directory();
     evaluate_the_file_paths();
     create_frames_directory();
     convert_input_file_to_wav();
     decode_wav_file();
     initialize_the_keyboard();
     create_the_video();
+    delete_temporary_files();
 }
 
 int main(int argc, char *argv[])
