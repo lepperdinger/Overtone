@@ -53,7 +53,8 @@ std::pair<std::string, std::string> OvertoneApp::split(
 
 void OvertoneApp::parse_arguments()
 {
-    std::string usage = "Overtone [options]... <input file path>";
+    std::string usage = "Overtone [options]... <input file path> "
+                        "<output file path *.mp4>";
     std::stringstream descriptions_stream;
     descriptions_stream
         << "Optional arguments:\n"
@@ -131,16 +132,25 @@ void OvertoneApp::parse_arguments()
             positional_arguments.push_back(*argument);
         }
     }
-    unsigned number_of_positional_arguments = 1;
+    unsigned number_of_positional_arguments = 2;
     if (positional_arguments.size() != number_of_positional_arguments)
     {
         cout << "Error: the following arguments are required: "
-             << "<input file path>" << endl;
+             << "<input file path> <output file path *.mp4>" << endl;
         std::exit(EXIT_FAILURE);
     }
     else
     {
         input_file_path.assign(positional_arguments[0]);
+        video_path.assign(positional_arguments[1]);
+        if (!(video_path.size() >= 4
+                && std::string(video_path.cend() - 4, video_path.cend())
+                == ".mp4"))
+        {
+            cerr << "Error: The name of the output file has to end with '.mp4'."
+                 << endl;
+            std::exit(1);
+        }
     }
 }
 
@@ -252,9 +262,6 @@ void OvertoneApp::evaluate_the_file_paths()
     audio_file_path = temporary_directory + "/audio.wav";
 
     frames_directory_path = temporary_directory + "/frames";
-
-    video_path = input_directory_path + '/' + input_filename
-                 + "_-_Overtone.mp4";
 }
 
 void OvertoneApp::create_frames_directory()
@@ -286,7 +293,7 @@ void OvertoneApp::convert_input_file_to_wav()
         std::exit(EXIT_FAILURE);
     }
 
-     //Converting the input file to a WAVE file via FFmpeg
+     // Converting the input file to a WAVE file via FFmpeg
     try
     {
         ffmpeg.convert_to_wave();
@@ -294,7 +301,7 @@ void OvertoneApp::convert_input_file_to_wav()
     catch(const FFmpeg::file_conversion_error &file_conversion_error)
     {
         cout << file_conversion_error.what() << endl;
-        std::abort();
+        std::exit(1);
     }
 }
 
