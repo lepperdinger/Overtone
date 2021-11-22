@@ -22,3 +22,9 @@ add_executable(Overtone
                src/Keyboard.h
                src/VideoFrame.cpp
                src/VideoFrame.h)
+
+if(MSVC)
+  target_compile_options(Overtone PRIVATE /W4 /WX)
+else()
+  target_compile_options(Overtone PRIVATE -Wall -Wextra -Wpedantic -Werror)
+endif()
