@@ -164,8 +164,6 @@ void VideoFrame::color_map(double input_value)
 void VideoFrame::layer_0_background()
 {
     color_map(0);
-    auto frame_iterator = frame.begin();
-    auto frame_end= frame.end();
     for (FrameSize row = 0; row < frame_height; ++row)
     {
         for (RowSize column = 0; column < frame_width; ++column)
