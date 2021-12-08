@@ -17,17 +17,6 @@ public:
     void run();
 private:
     /**
-     * Splits the string at the last occurrence of the separator and throws a
-     * runtime error if the string doesn't contain the separator.
-     * @param string the spring to be split
-     * @param separator the character at which the function splits the string
-     * @return a pair that contains the string before and the string after
-     *         the separator
-     */
-    static std::pair<std::string, std::string> split(const std::string &string,
-                                                     const char &separator);
-
-    /**
      * Parses the command line arguments.
      */
     void parse_arguments();
@@ -75,17 +64,6 @@ private:
 
     // path of the input file
     std::string input_file_path;
-
-    // path of the directory that contains the input file
-    std::string input_directory_path;
-
-    std::string input_filename_with_extension;
-
-    // name of the input file (without its file extension)
-    std::string input_filename;
-
-    // file extension of the input file
-    std::string file_extension;
 
     // path of the audio file that will be created fy FFmpeg
     std::string audio_file_path;

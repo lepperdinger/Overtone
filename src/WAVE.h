@@ -41,7 +41,7 @@ public:
      * @param audio_file_path path of the WAVE file
      */
     explicit WAVE(std::string audio_file_path) try:
-        audio_file_path(std::move(audio_file_path)) // TODO
+        audio_file_path(std::move(audio_file_path))
     {
         decode();
     }

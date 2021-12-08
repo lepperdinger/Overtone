@@ -29,28 +29,6 @@ OvertoneApp::OvertoneApp(std::vector<std::string> arguments):
     ffmpeg_executable_path = "ffmpeg";
 }
 
-std::pair<std::string, std::string> OvertoneApp::split(
-    const std::string &string,
-    const char &separator
-)
-{
-    auto separator_iterator = std::find(string.crbegin(),
-                                        string.crend(),
-                                        separator);
-    if (separator_iterator == string.crend())
-    {
-        throw std::runtime_error("The string doesn't contain the separator.");
-    }
-    else
-    {
-        std::string before_separator(string.cbegin(),
-                                     separator_iterator.base() - 1);
-        std::string after_separator(separator_iterator.base(),
-                                    string.cend());
-        return {before_separator, after_separator};
-    }
-}
-
 void OvertoneApp::parse_arguments()
 {
     std::string usage = "Overtone [options]... <input file path> "
@@ -234,33 +212,7 @@ void OvertoneApp::create_temporary_directory()
 
 void OvertoneApp::evaluate_the_file_paths()
 {
-    try
-    {
-        input_directory_path = split(input_file_path, '/').first;
-        input_filename_with_extension = split(input_file_path, '/').second;
-    }
-    catch (const std::runtime_error &error)
-    {
-        // The file path only consists of the filename.
-        input_directory_path = '.';
-        input_filename_with_extension = input_file_path;
-    }
-    try
-    {
-        input_filename = split(input_filename_with_extension, '.').first;
-
-        file_extension = split(input_filename_with_extension,
-                               '.').second;
-    }
-    catch (const std::runtime_error &error)
-    {
-        cerr << "Error: The input file doesn't have a file extension." << endl;
-        std::exit(EXIT_FAILURE);
-    }
-
-    // Path of the audio file that will be created fy FFmpeg.
     audio_file_path = temporary_directory + "/audio.wav";
-
     frames_directory_path = temporary_directory + "/frames";
 }
 
@@ -386,6 +338,7 @@ int main(int argc, char *argv[])
     overtone_app.run();
 }
 
+// TODO: Remove this unused function.
 void show_color_map(const Keyboard &keyboard, const double &gain)
 {
     std::shared_ptr<std::vector<double>> keyboard_ptr(keyboard.get_keyboard());
