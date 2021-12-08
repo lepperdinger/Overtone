@@ -57,15 +57,6 @@ public:
     }
 
     /**
-     * Returns the frequencies of the spectrum.
-     * @return frequencies
-     */
-    std::shared_ptr<Vector> get_frequencies() const
-    {
-        return frequencies;
-    }
-
-    /**
      * Returns the keyboard of the spectrum.
      * @return keys
      */
