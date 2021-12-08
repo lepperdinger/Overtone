@@ -338,13 +338,3 @@ int main(int argc, char *argv[])
     OvertoneApp overtone_app(arguments);
     overtone_app.run();
 }
-
-// TODO: Remove this unused function.
-void show_color_map(const Keyboard &keyboard, const double &gain)
-{
-    std::shared_ptr<std::vector<double>> keyboard_ptr(keyboard.get_keyboard());
-    for (unsigned key = 0; key != 88; ++ key)
-    {
-        keyboard_ptr->at(key) = 1 / gain / 87.0 * key;
-    }
-}
