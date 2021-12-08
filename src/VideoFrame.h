@@ -15,7 +15,7 @@ class VideoFrame
 {
 public:
     using Vector = std::vector<double>;
-    using VectorSize = std::vector<double>::size_type;
+    using VectorSize = Vector::size_type;
     VideoFrame(FFmpeg ffmpeg,
                double gain,
                unsigned history_speed,
@@ -24,7 +24,6 @@ public:
     bool evaluate_frame(const unsigned &frame_index);
 private:
     using Pixel = std::vector<unsigned char>;
-    using PixelSize = Pixel::size_type;
     using Row = std::vector<Pixel>;
     using RowSize = Row::size_type;
     using Frame = std::vector<Row>;
