@@ -31,6 +31,7 @@ OvertoneApp::OvertoneApp(std::vector<std::string> arguments):
 
 void OvertoneApp::parse_arguments()
 {
+    // TODO: Check if the output file exists.
     std::string usage = "Overtone [options]... <input file path> "
                         "<output file path *.mp4>";
     std::stringstream descriptions_stream;

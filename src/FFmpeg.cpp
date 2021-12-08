@@ -3,7 +3,6 @@
 //
 
 #include "FFmpeg.h"
-#include <iostream>
 #include <algorithm>
 
 FFmpeg::FFmpeg(std::string input_file_path,
