@@ -266,7 +266,7 @@ void OvertoneApp::decode_wav_file()
 void OvertoneApp::initialize_the_keyboard() {
     try
     {
-        keyboard = {
+        keyboard = Keyboard({
                 Spectrum(wave, channels, frame_rate, {0, 11}, 67000),
                 Spectrum(wave, channels, frame_rate, {11, 22}, 44000),
                 Spectrum(wave, channels, frame_rate, {22, 33}, 29000),
@@ -275,7 +275,7 @@ void OvertoneApp::initialize_the_keyboard() {
                 Spectrum(wave, channels, frame_rate, {56, 74}, 5000),
                 Spectrum(wave, channels, frame_rate, {74, 81}, 2500),
                 Spectrum(wave, channels, frame_rate, {81, 88}, 1900)
-        };
+        });
     }
     catch (const std::exception &exception)
     {
