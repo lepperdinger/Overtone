@@ -14,8 +14,6 @@ add_executable(Overtone
                src/FFmpeg.h
                src/WAVE.cpp
                src/WAVE.h
-               src/JSON.cpp
-               src/JSON.h
                src/Spectrum.cpp
                src/Spectrum.h
                src/Keyboard.cpp
