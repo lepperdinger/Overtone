@@ -30,7 +30,6 @@ OvertoneApp::OvertoneApp(std::vector<std::string> arguments):
 
 void OvertoneApp::parse_arguments()
 {
-    // TODO: Check if the output file exists.
     std::string usage = "Overtone [options]... <input file path> "
                         "<output file path *.mp4>";
     std::stringstream descriptions_stream;
@@ -121,13 +120,25 @@ void OvertoneApp::parse_arguments()
     {
         input_file_path.assign(positional_arguments[0]);
         video_path.assign(positional_arguments[1]);
+        std::ifstream video_file(video_path);
+        bool video_file_exists = video_file.good();
+        if (video_file_exists)
+        {
+            cerr << "Error: The file '" + video_path + "' does already exist."
+                 << endl;
+            std::exit(EXIT_FAILURE);
+        }
+        else
+        {
+            video_file.close();
+        }
         if (!(video_path.size() >= 4
                 && std::string(video_path.cend() - 4, video_path.cend())
                 == ".mp4"))
         {
             cerr << "Error: The name of the output file has to end with '.mp4'."
                  << endl;
-            std::exit(1);
+            std::exit(EXIT_FAILURE);
         }
     }
 }
@@ -253,7 +264,7 @@ void OvertoneApp::convert_input_file_to_wav()
     catch(const FFmpeg::file_conversion_error &file_conversion_error)
     {
         cout << file_conversion_error.what() << endl;
-        std::exit(1);
+        std::exit(EXIT_FAILURE);
     }
 }
 
