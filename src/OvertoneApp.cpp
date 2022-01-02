@@ -94,6 +94,11 @@ void OvertoneApp::parse_arguments()
                                   false,
                                   false);
         }
+        else if (*argument == "-h" || *argument == "--help")
+        {
+            show_help_message();
+            std::exit(EXIT_SUCCESS);
+        }
         else if (*argument == "-s")
         {
             history_speed = parse_argument(argument,
