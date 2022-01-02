@@ -22,6 +22,11 @@ private:
     void parse_arguments();
 
     /**
+     * Prints the help message.
+     */
+    void show_help_message() const;
+
+    /**
      * Parses the command line flag pattern -<flag> <value>.
      * @tparam T the type into which the value will be converted
      * @param current_argument iterator to the string that contains the flag

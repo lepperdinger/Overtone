@@ -28,7 +28,7 @@ OvertoneApp::OvertoneApp(std::vector<std::string> arguments):
     ffmpeg_executable_path = "ffmpeg";
 }
 
-void OvertoneApp::parse_arguments()
+void OvertoneApp::show_help_message() const
 {
     std::string usage = "Overtone [options]... <input file path> "
                         "<output file path *.mp4>";
@@ -46,10 +46,15 @@ void OvertoneApp::parse_arguments()
                                            "frame (default = " << history_speed
                                             << ")";
     std::string descriptions = descriptions_stream.str();
+    cout << usage << endl << endl;
+    cout << descriptions << endl;
+}
+
+void OvertoneApp::parse_arguments()
+{
     if (arguments.size() == 1)
     {
-        cout << usage << endl << endl;
-        cout << descriptions << endl << endl;
+        show_help_message();
         std::exit(EXIT_FAILURE);
     }
     std::vector<std::string> positional_arguments;
