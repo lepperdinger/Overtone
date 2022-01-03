@@ -11,7 +11,6 @@
 #include <string>
 #include <iostream>
 #include <vector>
-#include <utility>
 #include <sys/stat.h>
 #include <sstream>
 
@@ -19,13 +18,16 @@ using std::cout;
 using std::cerr;
 using std::endl;
 
-OvertoneApp::OvertoneApp(std::vector<std::string> arguments):
-    arguments(std::move(arguments))
+OvertoneApp::OvertoneApp(int argc, char **argv)
 {
     frame_rate = 25;
     gain = 35.;
     history_speed = 10;
     ffmpeg_executable_path = "ffmpeg";
+    for (int index = 0; index != argc; ++index)
+    {
+        arguments.emplace_back(argv[index]);
+    }
 }
 
 void OvertoneApp::show_help_message() const
@@ -348,13 +350,8 @@ void OvertoneApp::run()
     delete_temporary_files();
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char **argv)
 {
-    std::vector<std::string> arguments;
-    for (int index = 0; index != argc; ++index)
-    {
-        arguments.emplace_back(argv[index]);
-    }
-    OvertoneApp overtone_app(arguments);
+    OvertoneApp overtone_app(argc, argv);
     overtone_app.run();
 }

@@ -13,7 +13,7 @@
 
 class OvertoneApp {
 public:
-    explicit OvertoneApp(std::vector<std::string> arguments);
+    OvertoneApp(int argc, char **argv);
     void run();
 private:
     /**
