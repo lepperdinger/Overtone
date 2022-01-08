@@ -4,6 +4,7 @@
 
 #include "FFmpeg.h"
 #include <algorithm>
+#include <sstream>
 
 FFmpeg::FFmpeg(std::string input_file_path,
                std::string audio_file_path,
@@ -20,8 +21,22 @@ FFmpeg::FFmpeg(std::string input_file_path,
     std::string command = ffmpeg_executable_path + " -version 1>/dev/null";
     if (std::system(command.c_str()))
     {
-        throw std::invalid_argument("The file path of the FFmpeg executable is "
-                                    "invalid.");
+        std::string message;
+        if (ffmpeg_executable_path == "ffmpeg")
+        {
+            message = "It seems that the command 'ffmpeg' does not exist. "
+                      "Either install FFmpeg or specify the path of the FFmpeg "
+                      "executable via the -F option.";
+        }
+        else
+        {
+            std::stringstream message_stream;
+            message_stream << "The specified file path of the FFmpeg "
+                           << "executable, '" << ffmpeg_executable_path << "', "
+                           << "is invalid.";
+            message = message_stream.str();
+        }
+        throw std::invalid_argument(message);
     }
     else
     {
