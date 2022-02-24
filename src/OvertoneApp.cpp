@@ -44,6 +44,7 @@ void OvertoneApp::show_help_message() const
                                            "(default = " << frame_rate << ")\n"
            "  -F  <ffmpeg executable path>  path of the FFmpeg executable\n"
            "  -g  <gain>                    gain (default = " << gain << ")\n"
+           "  -h, --help                    show this help message and exit\n"
            "  -s  <history speed>           speed of the history in lines per "
                                            "frame (default = " << history_speed
                                             << ")";
