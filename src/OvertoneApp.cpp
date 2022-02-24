@@ -28,6 +28,15 @@ OvertoneApp::OvertoneApp(int argc, char **argv)
     {
         arguments.emplace_back(argv[index]);
     }
+    parse_arguments();
+    create_temporary_directory();
+    evaluate_the_file_paths();
+    create_frames_directory();
+}
+
+OvertoneApp::~OvertoneApp()
+{
+    delete_temporary_files();
 }
 
 void OvertoneApp::show_help_message() const
@@ -340,15 +349,10 @@ void OvertoneApp::delete_temporary_files()
 
 void OvertoneApp::run()
 {
-    parse_arguments();
-    create_temporary_directory();
-    evaluate_the_file_paths();
-    create_frames_directory();
     convert_input_file_to_wav();
     decode_wav_file();
     initialize_the_keyboard();
     create_the_video();
-    delete_temporary_files();
 }
 
 int main(int argc, char **argv)

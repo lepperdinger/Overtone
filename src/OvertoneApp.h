@@ -14,6 +14,7 @@
 class OvertoneApp {
 public:
     OvertoneApp(int argc, char **argv);
+    ~OvertoneApp();
     void run();
 private:
     /**
