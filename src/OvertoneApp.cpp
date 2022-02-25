@@ -358,9 +358,3 @@ void OvertoneApp::run()
     initialize_the_keyboard();
     create_the_video();
 }
-
-int main(int argc, char **argv)
-{
-    OvertoneApp overtone_app(argc, argv);
-    overtone_app.run();
-}
