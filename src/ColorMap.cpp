@@ -5,19 +5,99 @@
 #include "ColorMap.h"
 #include "Tests.h"
 #include <vector>
+#include <stdexcept>
+#include <algorithm>
+#include <sstream>
 
 
-ColorMap::ColorMap(std::string color_map_name, double gain, unsigned char gate):
-    gain(gain), gate(gate), color_map_name(std::move(color_map_name))
-{
+ColorMap::ColorMap(std::string color_map_name, double gain, double gate):
+    gain(gain), gate(gate), color_map_name(std::move(color_map_name)) {
     if (gain < 0)
     {
-        throw std::out_of_range("The argument `gain` is negative.");
+        throw std::out_of_range("Overtone: Error: The argument `gain` is "
+                                "negative.");
     }
 
-    color_maps["simple"] = convert_color_map({"101010",
-                                              "FFFFFF"});
+    if (gate < 0)
+    {
+        throw std::out_of_range("Overtone: Error: The argument `gate` is "
+                                "negative.");
+    }
 
+    color_maps["test"] = convert_color_map({"202020",
+                                            "AAAAAA",
+                                            "FFFFFF"});
+
+    if (color_maps.find(this->color_map_name) == color_maps.end())
+    {
+        std::stringstream message;
+        message << "Overtone: Error: Colormap '"
+                << this->color_map_name
+                << "' not found.";
+        throw std::invalid_argument(message.str());
+    }
+    determine_limits();
+}
+
+std::vector<unsigned char>
+ColorMap::operator()(double input_value)
+{
+    return evaluate_color(input_value);
+}
+
+void
+ColorMap::determine_limits()
+{
+    size_t number_of_limits = color_maps[color_map_name].size();
+    double step_size = 1. / (number_of_limits - 1);
+    limits.clear();
+    limits.reserve(number_of_limits);
+    for (size_t index = 0; index != number_of_limits; ++index)
+    {
+        double limit = step_size * index;
+        limits.push_back(limit);
+    }
+}
+
+std::vector<unsigned char>
+ColorMap::evaluate_color(double input_value)
+{
+    input_value *= gain;
+
+    if (input_value <= gate)
+    {
+        return color_maps[color_map_name].front();
+    }
+    else if (input_value >= limits.back())
+    {
+        return color_maps[color_map_name].back();
+    }
+    else
+    {
+        std::vector<unsigned char> color;
+        const auto &color_map = color_maps[color_map_name];
+        for (size_t index = 0; index != (limits.size() - 1); ++index)
+        {
+            double lower_limit = limits[index];
+            double upper_limit = limits[index + 1];
+            if (lower_limit <= input_value && input_value < upper_limit)
+            {
+                for (size_t rgb_index = 0; rgb_index != 3; ++rgb_index)
+                {
+                    double lower_value = color_map[index][rgb_index];
+                    double upper_value = color_map[index + 1][rgb_index];
+                    std::vector<double> lower_point{lower_limit, lower_value};
+                    std::vector<double> upper_point{upper_limit, upper_value};
+                    double value = linear_interpolation(lower_point,
+                                                        upper_point,
+                                                        input_value);
+                    color.push_back(value);
+                }
+                continue;
+            }
+        }
+        return color;
+    }
 }
 
 std::vector<std::vector<unsigned char>>

@@ -11,17 +11,18 @@
 
 class ColorMap {
 public:
-    ColorMap(std::string color_map_name, double gain, unsigned char gate);
+    ColorMap(std::string color_map_name, double gain, double gate);
+    std::vector<unsigned char> operator()(double input_value);
     static void run_tests();
 private:
     double gain;
-    unsigned char gate;
+    double gate;
     std::string color_map_name;
     std::map<std::string, std::vector<std::vector<unsigned char>>> color_maps;
-    std::vector<std::vector<unsigned char>> color_map;
     static double linear_interpolation(std::vector<double> lower_point,
                                        std::vector<double> upper_point,
                                        double x_value);
+    std::vector<double> limits;
 
     static std::vector<unsigned char> hex_string_to_rgb_values(
         const std::string &hex_string
@@ -30,6 +31,10 @@ private:
     static std::vector<std::vector<unsigned char>> convert_color_map(
             std::vector<std::string> string_color_map
     );
+
+    std::vector<unsigned char> evaluate_color(double input_value);
+
+    void determine_limits();
 };
 
 
