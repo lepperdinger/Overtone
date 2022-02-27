@@ -86,6 +86,9 @@ private:
     // gain
     double gain;
 
+    // gate
+    double gate;
+
     // speed of the history in lines per video frame
     unsigned history_speed;
 

@@ -10,6 +10,7 @@
 #include <string>
 #include "Keyboard.h"
 #include "FFmpeg.h"
+#include "ColorMap.h"
 
 class VideoFrame
 {
@@ -18,6 +19,7 @@ public:
     using VectorSize = Vector::size_type;
     VideoFrame(FFmpeg ffmpeg,
                double gain,
+               double gate,
                unsigned history_speed,
                Keyboard keyboard);
     void save_frame(const unsigned &frame_index);
@@ -34,17 +36,17 @@ private:
     FFmpeg ffmpeg;
     unsigned frame_width;
     unsigned frame_height;
-    double gain;
     const std::vector<VectorSize> white_keys;
     const std::vector<VectorSize> black_keys;
     unsigned char red, green, blue;
     Keyboard keyboard;
+    ColorMap color_map;
 
     void create_frame();
     inline void set_pixel(const FrameSize &row,
                           const FrameSize &column);
 
-    inline void color_map(double input_value);
+    inline void set_color(double input_value);
     inline void layer_0_background();
     inline void layer_1_frame();
     inline void layer_2_history();

@@ -14,14 +14,13 @@ ColorMap::ColorMap(std::string color_map_name, double gain, double gate):
     gain(gain), gate(gate), color_map_name(std::move(color_map_name)) {
     if (gain < 0)
     {
-        throw std::out_of_range("Overtone: Error: The argument `gain` is "
-                                "negative.");
+        throw std::out_of_range("The argument `gain` is negative.");
     }
 
-    if (gate < 0)
+    if (gate < 0 || gate > 1)
     {
-        throw std::out_of_range("Overtone: Error: The argument `gate` is "
-                                "negative.");
+        throw std::out_of_range("The argument `gate` is not within the "
+                                "interval 0 <= gate <= 1.");
     }
 
     color_maps["test"] = convert_color_map({"202020",

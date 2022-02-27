@@ -11,6 +11,7 @@ using std::endl;
 
 VideoFrame::VideoFrame(FFmpeg ffmpeg,
                        double gain,
+                       double gate,
                        unsigned history_speed,
                        Keyboard keyboard):
     frame(),
@@ -19,7 +20,6 @@ VideoFrame::VideoFrame(FFmpeg ffmpeg,
     ffmpeg(std::move(ffmpeg)),
     frame_width(1920),
     frame_height(1080),
-    gain(gain),
     white_keys({0, 2, 3, 5, 7, 8, 10, 12, 14, 15, 17, 19, 20, 22, 24, 26, 27,
                 29, 31, 32, 34, 36, 38, 39, 41, 43, 44, 46, 48, 50, 51, 53, 55,
                 56, 58, 60, 62, 63, 65, 67, 68, 70, 72, 74, 75, 77, 79, 80, 82,
@@ -30,13 +30,9 @@ VideoFrame::VideoFrame(FFmpeg ffmpeg,
     red(0),
     green(0),
     blue(0),
-    keyboard(std::move(keyboard))
+    keyboard(std::move(keyboard)),
+    color_map("test", gain, gate)
 {
-    if (gain < 0)
-    {
-        throw std::out_of_range("The argument `gain` is negative.");
-    }
-
     if (history_speed == 0 || history_speed > 786)
     {
         throw std::out_of_range("The argument `history_speed` is not within "
@@ -122,48 +118,17 @@ inline void VideoFrame::set_pixel(const FrameSize &row,
     frame[row][column].assign({red, green, blue});
 }
 
-void VideoFrame::color_map(double input_value)
+void VideoFrame::set_color(double input_value)
 {
-#ifdef DEBUG
-    if (input_value < 0)
-    {
-        throw std::out_of_range("The argument `input_value` is negative.");
-    }
-#endif
-
-    input_value *= 255.0 * gain;
-
-    if (input_value > 255)
-    {
-        input_value = 255.0;
-    }
-
-    if (input_value < 85)
-    {
-        double scaled = input_value / 85.;
-        red   = 43. + scaled * 8.;
-        green = 44. + scaled * 109.;
-        blue  = 40. + scaled * 97;
-    }
-    else if (input_value < 170)
-    {
-        double scaled = (input_value - 85) / 85;
-        red   = 51.  + scaled * 74;
-        green = 153. + scaled * 73;
-        blue  = 137. + scaled * 72;
-    }
-    else {
-        double scaled = (input_value - 170) / 85;
-        red   = 125. + scaled * 130;
-        green = 226. + scaled * 24;
-        blue  = 209. + scaled * 42;
-    }
+    auto rgb_color = color_map(input_value);
+    red = rgb_color[0];
+    green = rgb_color[1];
+    blue = rgb_color[2];
 }
-
 
 void VideoFrame::layer_0_background()
 {
-    color_map(0);
+    set_color(0);
     for (FrameSize row = 0; row < frame_height; ++row)
     {
         for (RowSize column = 0; column < frame_width; ++column)
@@ -235,9 +200,9 @@ void VideoFrame::layer_3_white_keys()
             ++column;
         }
 #ifdef DEBUG
-        color_map(keyboard.get_keyboard()->at(white_key));
+        set_color(keyboard.get_keyboard()->at(white_key));
 #else
-        color_map((*keyboard.get_keyboard())[white_key]);
+        set_color((*keyboard.get_keyboard())[white_key]);
 #endif
         for (FrameSize column_counter = 0; column_counter != 32;
              ++column_counter)
@@ -310,7 +275,7 @@ void VideoFrame::layer_4_black_keys()
         column -= 4;
 
         // Left side of the first row of the history
-        color_map(0);
+        set_color(0);
         {
             FrameSize row = 809;
             for (FrameSize column_counter = 0; column_counter != 4;
@@ -322,9 +287,9 @@ void VideoFrame::layer_4_black_keys()
         }
 
 #ifdef DEBUG
-        color_map(keyboard.get_keyboard()->at(key));
+        set_color(keyboard.get_keyboard()->at(key));
 #else
-        color_map((*keyboard.get_keyboard())[key]);
+        set_color((*keyboard.get_keyboard())[key]);
 #endif
 
         // Colored part in the middle
@@ -367,7 +332,7 @@ void VideoFrame::layer_4_black_keys()
 
         column -= 4;
         // Left side of the first row of the history
-        color_map(0);
+        set_color(0);
         {
             FrameSize row = 809;
             for (FrameSize column_counter = 0; column_counter != 4;

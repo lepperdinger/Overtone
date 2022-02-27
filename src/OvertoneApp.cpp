@@ -23,6 +23,7 @@ OvertoneApp::OvertoneApp(int argc, char **argv)
     frame_rate = 25;
     gain = 35.;
     history_speed = 10;
+    gate = 0;
     ffmpeg_executable_path = "ffmpeg";
     for (int index = 0; index != argc; ++index)
     {
@@ -53,6 +54,7 @@ void OvertoneApp::show_help_message() const
                                            "(default = " << frame_rate << ")\n"
            "  -F  <ffmpeg executable path>  path of the FFmpeg executable\n"
            "  -g  <gain>                    gain (default = " << gain << ")\n"
+           "  -G  <gate>                    gate (default = " << gate << ")\n"
            "  -h, --help                    show this help message and exit\n"
            "  -s  <history speed>           speed of the history in lines per "
                                            "frame (default = " << history_speed
@@ -101,6 +103,14 @@ void OvertoneApp::parse_arguments()
         else if (*argument == "-g")
         {
             gain = parse_argument(argument,
+                                  &OvertoneApp::to_double,
+                                  true,
+                                  false,
+                                  false);
+        }
+        else if (*argument == "-G")
+        {
+            gate = parse_argument(argument,
                                   &OvertoneApp::to_double,
                                   true,
                                   false,
@@ -325,6 +335,7 @@ void OvertoneApp::create_the_video()
     {
         VideoFrame video_frame = VideoFrame(ffmpeg,
                                             gain,
+                                            gate,
                                             history_speed,
                                             keyboard);
         unsigned frame = 0;
