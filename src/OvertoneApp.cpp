@@ -12,7 +12,7 @@
 #include <iostream>
 #include <vector>
 #include <sys/stat.h>
-#include <sstream>
+#include <iomanip>
 
 using std::cout;
 using std::cerr;
@@ -44,21 +44,46 @@ void OvertoneApp::show_help_message() const
 {
     std::string usage = "Overtone [options]... <input file path> "
                         "<output file path *.mp4>";
+
     std::stringstream descriptions_stream;
+    descriptions_stream << std::left;
+    int argument_length{25};
+    std::string new_line = '\n' + std::string(argument_length, ' ');
     descriptions_stream
-        << "Optional arguments:\n"
-           "  -c  <channel>                 use a specific audio channel "
-                                           "instead of all\n"
-           "                                channels (e.g., 0)\n"
-           "  -f  <frame rate>              frame rate in frames per seconds "
-                                           "(default = " << frame_rate << ")\n"
-           "  -F  <ffmpeg executable path>  path of the FFmpeg executable\n"
-           "  -g  <gain>                    gain (default = " << gain << ")\n"
-           "  -G  <gate>                    gate (default = " << gate << ")\n"
-           "  -h, --help                    show this help message and exit\n"
-           "  -s  <history speed>           speed of the history in lines per "
-                                           "frame (default = " << history_speed
-                                            << ")";
+        << std::setw(argument_length)
+        << "  -c <channel>"
+        << "use a specific audio channel instead of all channels"
+        << new_line
+        << "(e.g., 0)\n"
+
+        << std::setw(argument_length)
+        << "  -f <frame rate>"
+        << "frame rate in frames per seconds (default = "
+        << frame_rate << ")\n"
+
+        << std::setw(argument_length)
+        << "  -F <FFmpeg executable>"
+        << "path of the FFmpeg executable\n"
+
+        << std::setw(argument_length)
+        << "  -g <gain>"
+        << "gain (default = "
+        << gain << ")\n"
+
+        << std::setw(argument_length)
+        << "  -G <gate>"
+        << "gate (0.0 <= gate <= 1.0) (default = "
+        << gate << ")\n"
+
+        << std::setw(argument_length)
+        << "  -h, --help"
+        << "show this help message and exit\n"
+
+        << std::setw(argument_length)
+        << "  -s <history speed>"
+        << "speed of the history in lines per frame (default = "
+        << history_speed << ")";
+
     std::string descriptions = descriptions_stream.str();
     cout << usage << endl << endl;
     cout << descriptions << endl;
