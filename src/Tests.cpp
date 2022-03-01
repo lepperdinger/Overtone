@@ -5,7 +5,8 @@
 #include "Tests.h"
 #include "ColorMap.h"
 
-void Tests::run_all_tests()
+void
+Tests::run_all_tests ()
 {
-    ColorMap::run_tests();
+  ColorMap::run_tests ();
 }

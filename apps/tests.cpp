@@ -3,7 +3,8 @@
 //
 #include "Tests.h"
 
-int main()
+int
+main ()
 {
-    Tests::run_all_tests();
+  Tests::run_all_tests ();
 }

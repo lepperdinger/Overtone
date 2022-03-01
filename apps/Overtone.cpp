@@ -3,8 +3,9 @@
 //
 #include "OvertoneApp.h"
 
-int main(int argc, char **argv)
+int
+main (int argc, char **argv)
 {
-    OvertoneApp overtone_app(argc, argv);
-    overtone_app.run();
+  OvertoneApp overtone_app (argc, argv);
+  overtone_app.run ();
 }
