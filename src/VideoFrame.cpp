@@ -193,11 +193,7 @@ VideoFrame::layer_3_white_keys ()
             }
           ++column;
         }
-#ifdef DEBUG
-      set_color (keyboard.get_keyboard ()->at (white_key));
-#else
       set_color ((*keyboard.get_keyboard ())[white_key]);
-#endif
       for (FrameSize column_counter = 0; column_counter != 32;
            ++column_counter)
         {
@@ -224,8 +220,6 @@ VideoFrame::layer_3_white_keys ()
 void
 VideoFrame::layer_4_black_keys ()
 {
-  //    for (FrameSize row = 809; row != 980; ++row)
-
   FrameSize column = 51;
 
   // 0 = C#
@@ -279,11 +273,7 @@ VideoFrame::layer_4_black_keys ()
           }
       }
 
-#ifdef DEBUG
-      set_color (keyboard.get_keyboard ()->at (key));
-#else
       set_color ((*keyboard.get_keyboard ())[key]);
-#endif
 
       // Colored part in the middle
       for (FrameSize column_counter = 0; column_counter != 10;

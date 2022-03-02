@@ -71,9 +71,6 @@ WAVE::search_chunk (std::ifstream &file, const std::string &wanted_chunk_id,
 void
 WAVE::parse_riff_chunk_head (std::ifstream &file)
 {
-  //    chunk_id = "RIFF";
-  //    search_chunk(file, chunk_id, chunk_size);
-
   read (file, chunk_id);
   if (chunk_id != "RIFF")
     {

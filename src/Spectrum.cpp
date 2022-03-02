@@ -80,20 +80,6 @@ Spectrum::evaluate_frame ()
       = evaluate_all_frequencies (time_range, wave.get_sample_rate ());
   VectorRange frequency_range
       = key_range_to_frequency_range (key_range, all_frequencies);
-
-#ifdef DEBUG
-  if (frequency_range.first > std::numeric_limits<int>::max ())
-    {
-      throw std::overflow_error ("Unsigned `frequency_range.first` cannot be "
-                                 "converted to signed int.");
-    }
-  if (frequency_range.second > std::numeric_limits<int>::max ())
-    {
-      throw std::overflow_error ("Unsigned `frequency_range.second` cannot be "
-                                 "converted to signed int.");
-    }
-#endif
-
   auto all_frequencies_begin = all_frequencies.cbegin ();
   frequencies->assign (all_frequencies_begin + frequency_range.first,
                        all_frequencies_begin + frequency_range.second);
@@ -149,11 +135,7 @@ Spectrum::evaluate_spectrum (
   spectra.reserve (number_of_channels);
   for (const unsigned &channel : channels)
     {
-#ifdef DEBUG
-      spectra.emplace_back (evaluate_channel_spectrum (*signal.at (channel),
-#else
       spectra.emplace_back (evaluate_channel_spectrum (*signal[channel],
-#endif
                                                        time_range,
                                                        frequency_range));
     }
@@ -184,35 +166,11 @@ Spectrum::evaluate_channel_spectrum (const Vector &channel,
   Vector spectrum;
   VectorSize number_of_samples = time_range.second - time_range.first;
   spectrum.reserve (frequency_range.second - frequency_range.first);
-
   double fourier_negative_imaginary_part;
   double fourier_real_part;
   double constant = 2 * M_PI / number_of_samples;
   double current_sample;
   double frequency_index_double;
-
-#ifdef DEBUG
-  if (frequency_range.first < 1
-      || frequency_range.second > number_of_samples / 2)
-    {
-      throw std::out_of_range ("The frequency limits are out of range.");
-    }
-  if (frequency_range.second <= frequency_range.first)
-    {
-      throw std::invalid_argument ("The upper frequency limit is smaller than "
-                                   "the lower frequency limit.");
-    }
-  if (time_range.first < 0 || time_range.first > channel.size ())
-    {
-      throw std::out_of_range ("The time limits are out of range.");
-    }
-  if (time_range.second <= time_range.first)
-    {
-      throw std::invalid_argument (
-          "The Upper time limit is smaller than the lower time limit.");
-    }
-#endif
-
   for (VectorSize frequency_index = frequency_range.first;
        frequency_index != frequency_range.second; ++frequency_index)
     {
@@ -222,11 +180,7 @@ Spectrum::evaluate_channel_spectrum (const Vector &channel,
       for (VectorSize time_index = time_range.first;
            time_index != time_range.second; ++time_index)
         {
-#ifdef DEBUG
-          current_sample = channel.at (time_index);
-#else
           current_sample = channel[time_index];
-#endif
           fourier_negative_imaginary_part
               += (current_sample
                   * sin (constant * frequency_index_double * time_index));
@@ -288,12 +242,6 @@ Spectrum::keys_to_frequencies (const double &key)
 double
 Spectrum::frequencies_to_keys (const double &frequency)
 {
-#ifdef DEBUG
-  if (frequency == 0)
-    {
-      throw std::domain_error ("Division by zero.");
-    }
-#endif
   return 48. + 12. * log2 (frequency / 440.);
 }
 
