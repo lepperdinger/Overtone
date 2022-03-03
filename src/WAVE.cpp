@@ -20,7 +20,6 @@ WAVE::read (std::ifstream &file, int16_t &destination)
 {
   char bytes[2];
   file.read (bytes, 2);
-  // TODO: Conversion to signed int16_t is implementation-defined...
   destination = static_cast<unsigned char> (bytes[0]) | (bytes[1]) << 8;
 }
 
