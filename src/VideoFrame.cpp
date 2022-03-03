@@ -220,23 +220,23 @@ VideoFrame::layer_4_black_keys ()
 {
   FrameSize column = 51;
 
-  // 0 = C#
-  // 1 = D#
-  // 2 = F#
-  // 3 = G#
-  // 4 = A#
-  unsigned note = 4;
+  unsigned c_sharp = 0;
+  unsigned f_sharp = 2;
+  unsigned a_sharp = 4;
+
+  unsigned note = a_sharp;
 
   for (VectorSize key : black_keys)
     {
-      if (note == 0 || note == 2)
+      if (note == c_sharp || note == f_sharp)
         {
+          // There are no black keys between H & C and E & F.
           column += 36;
           ++note;
         }
-      else if (note == 4)
+      else if (note == a_sharp)
         {
-          note = 0;
+          note = c_sharp;
         }
       else
         {
@@ -341,5 +341,3 @@ VideoFrame::layer_5_horizontal_separator ()
         }
     }
 }
-
-
