@@ -96,7 +96,7 @@ ColorMap::evaluate_color (double input_value)
 }
 
 std::vector<std::vector<unsigned char> >
-ColorMap::convert_color_map (std::vector<std::string> string_color_map)
+ColorMap::convert_color_map (const std::vector<std::string> &string_color_map)
 {
   std::vector<std::vector<unsigned char> > color_map;
   color_map.reserve (string_color_map.size ());
