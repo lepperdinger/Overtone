@@ -273,7 +273,6 @@ OvertoneApp::convert_input_file_to_wav ()
   catch (const std::exception &exception)
     {
       cerr << "Overtone: Error: " << exception.what () << endl;
-      delete_temporary_files ();
       std::exit (EXIT_FAILURE);
     }
 
@@ -285,7 +284,6 @@ OvertoneApp::convert_input_file_to_wav ()
   catch (const FFmpeg::file_conversion_error &file_conversion_error)
     {
       cout << file_conversion_error.what () << endl;
-      delete_temporary_files ();
       std::exit (EXIT_FAILURE);
     }
 }
@@ -314,7 +312,6 @@ OvertoneApp::initialize_the_keyboard ()
   catch (const std::exception &exception)
     {
       cerr << "Overtone: Error: " << exception.what () << endl;
-      delete_temporary_files ();
       std::exit (EXIT_FAILURE);
     }
 }
@@ -337,7 +334,6 @@ OvertoneApp::create_the_video ()
   catch (const std::exception &exception)
     {
       cerr << "Overtone: Error: " << exception.what () << endl;
-      delete_temporary_files ();
       std::exit (EXIT_FAILURE);
     }
 
