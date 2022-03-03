@@ -347,8 +347,11 @@ OvertoneApp::create_the_video ()
 void
 OvertoneApp::delete_temporary_files ()
 {
-  std::string command = "rm -r " + temporary_directory;
-  std::system (command.c_str ());
+  if (!temporary_directory.empty ())
+    {
+      std::string command = "rm -r " + temporary_directory;
+      std::system (command.c_str ());
+    }
 }
 
 void
