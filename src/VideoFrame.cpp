@@ -161,18 +161,16 @@ VideoFrame::layer_1_frame ()
     }
 }
 
-void
-VideoFrame::layer_5_horizontal_separator ()
+inline void
+VideoFrame::layer_2_history ()
 {
-  red = 0;
-  green = 0;
-  blue = 0;
-  for (FrameSize row = 810; row != 822; ++row)
+  for (FrameSize row = 809; row != 809 - history_speed + 1; --row)
     {
-      for (FrameSize column = 0; column != frame_width; ++column)
-        {
-          set_pixel (row, column);
-        }
+      frame[row - 1] = frame[row];
+    }
+  for (FrameSize row = 24; row != 810 - history_speed; ++row)
+    {
+      frame[row] = frame[row + history_speed];
     }
 }
 
@@ -329,15 +327,19 @@ VideoFrame::layer_4_black_keys ()
     }
 }
 
-inline void
-VideoFrame::layer_2_history ()
+void
+VideoFrame::layer_5_horizontal_separator ()
 {
-  for (FrameSize row = 809; row != 809 - history_speed + 1; --row)
+  red = 0;
+  green = 0;
+  blue = 0;
+  for (FrameSize row = 810; row != 822; ++row)
     {
-      frame[row - 1] = frame[row];
-    }
-  for (FrameSize row = 24; row != 810 - history_speed; ++row)
-    {
-      frame[row] = frame[row + history_speed];
+      for (FrameSize column = 0; column != frame_width; ++column)
+        {
+          set_pixel (row, column);
+        }
     }
 }
+
+
