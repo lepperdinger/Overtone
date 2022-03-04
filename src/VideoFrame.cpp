@@ -21,7 +21,7 @@ VideoFrame::VideoFrame (FFmpeg ffmpeg, double gain, double gate,
                     30, 33, 35, 37, 40, 42, 45, 47, 49, 52, 54, 57,
                     59, 61, 64, 66, 69, 71, 73, 76, 78, 81, 83, 85 }),
       red (0), green (0), blue (0), keyboard (std::move (keyboard)),
-      color_map ("test", gain, gate)
+      color_map ("current_map", gain, gate)
 {
   if (history_speed == 0 || history_speed > 786)
     {
@@ -118,6 +118,15 @@ VideoFrame::set_color (double input_value)
 }
 
 void
+VideoFrame::set_edge_color ()
+{
+  auto rgb_color = color_map.get_edge_color();
+  red = rgb_color[0];
+  green = rgb_color[1];
+  blue = rgb_color[2];
+}
+
+void
 VideoFrame::layer_0_background ()
 {
   set_color (0);
@@ -133,9 +142,7 @@ VideoFrame::layer_0_background ()
 void
 VideoFrame::layer_1_frame ()
 {
-  red = 0;
-  green = 0;
-  blue = 0;
+  set_edge_color();
   for (FrameSize row = 0; row != frame_height; ++row)
     {
       for (FrameSize column = 0; column != 24; ++column)
@@ -180,9 +187,7 @@ VideoFrame::layer_3_white_keys ()
   FrameSize column = 24;
   for (VectorSize white_key : white_keys)
     {
-      red = 0;
-      green = 0;
-      blue = 0;
+      set_edge_color();
       for (FrameSize column_counter = 0; column_counter != 2; ++column_counter)
         {
           for (FrameSize row = 822; row != 1056; ++row)
@@ -201,9 +206,7 @@ VideoFrame::layer_3_white_keys ()
             }
           ++column;
         }
-      red = 0;
-      green = 0;
-      blue = 0;
+      set_edge_color();
       for (FrameSize column_counter = 0; column_counter != 2; ++column_counter)
         {
           for (FrameSize row = 822; row != 1056; ++row)
@@ -243,9 +246,7 @@ VideoFrame::layer_4_black_keys ()
           ++note;
         }
 
-      red = 0;
-      green = 0;
-      blue = 0;
+      set_edge_color();
 
       // Left black line
       for (FrameSize column_counter = 0; column_counter != 4; ++column_counter)
@@ -284,9 +285,7 @@ VideoFrame::layer_4_black_keys ()
           ++column;
         }
 
-      red = 0;
-      green = 0;
-      blue = 0;
+      set_edge_color();
 
       // Black line at the bottom
       column -= 10;
@@ -330,9 +329,7 @@ VideoFrame::layer_4_black_keys ()
 void
 VideoFrame::layer_5_horizontal_separator ()
 {
-  red = 0;
-  green = 0;
-  blue = 0;
+  set_edge_color();
   for (FrameSize row = 810; row != 822; ++row)
     {
       for (FrameSize column = 0; column != frame_width; ++column)

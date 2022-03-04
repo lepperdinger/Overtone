@@ -23,9 +23,20 @@ ColorMap::ColorMap (std::string color_map_name, double gain, double gate)
           "The argument `gate` is not within the interval 0 <= gate <= 1.");
     }
 
-  color_maps["test"] = convert_color_map ({ "202020", "AAAAAA", "FFFFFF" });
+  edge_colors["gray"] = hex_string_to_rgb_values ("000000");
+  color_maps["gray"] = convert_color_map ({ "202020", "ffffff" });
 
-  if (color_maps.find (this->color_map_name) == color_maps.end ())
+  edge_colors["white"] = hex_string_to_rgb_values ("202020");
+  color_maps["white"] = convert_color_map ({ "ffffff", "000000" });
+
+  edge_colors["current_map"] = edge_colors["gray"];
+  color_maps["current_map"] = color_maps["gray"];
+
+  bool color_map_exists
+      = color_maps.find (this->color_map_name) != color_maps.end ();
+  bool edge_color_exists
+      = edge_colors.find (this->color_map_name) != edge_colors.end ();
+  if (!(color_map_exists && edge_color_exists))
     {
       std::stringstream message;
       message << "Overtone: Error: Colormap '" << this->color_map_name
@@ -39,6 +50,12 @@ std::vector<unsigned char>
 ColorMap::operator() (double input_value)
 {
   return evaluate_color (input_value);
+}
+
+std::vector<unsigned char>
+ColorMap::get_edge_color ()
+{
+  return edge_colors[color_map_name];
 }
 
 void

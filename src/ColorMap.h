@@ -13,7 +13,9 @@ class ColorMap
 public:
   ColorMap (std::string color_map_name, double gain, double gate);
   std::vector<unsigned char> operator() (double input_value);
+  std::vector<unsigned char> get_edge_color ();
   static void run_tests ();
+
 
 private:
   double gain;
@@ -21,6 +23,7 @@ private:
   std::string color_map_name;
   std::unordered_map<std::string, std::vector<std::vector<unsigned char> > >
       color_maps;
+  std::unordered_map<std::string, std::vector<unsigned char> > edge_colors;
   static double linear_interpolation (std::vector<double> lower_point,
                                       std::vector<double> upper_point,
                                       double x_value);

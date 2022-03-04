@@ -43,6 +43,7 @@ private:
   inline void set_pixel (const FrameSize &row, const FrameSize &column);
 
   inline void set_color (double input_value);
+  inline void set_edge_color ();
   inline void layer_0_background ();
   inline void layer_1_frame ();
   inline void layer_2_history ();
