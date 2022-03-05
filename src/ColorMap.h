@@ -16,11 +16,10 @@ public:
   std::vector<unsigned char> get_edge_color ();
   static void run_tests ();
 
-
 private:
   double gain;
   double gate;
-  std::string color_map_name;
+  std::string theme;
   std::unordered_map<std::string, std::vector<std::vector<unsigned char> > >
       color_maps;
   std::unordered_map<std::string, std::vector<unsigned char> > edge_colors;
@@ -36,6 +35,8 @@ private:
   convert_color_map (const std::vector<std::string> &string_color_map);
 
   std::vector<unsigned char> evaluate_color (double input_value);
+
+  std::vector<std::string> get_theme_names ();
 
   void determine_limits ();
 };

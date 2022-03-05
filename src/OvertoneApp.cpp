@@ -24,6 +24,7 @@ OvertoneApp::OvertoneApp (int argc, char **argv)
   gain = 35.;
   history_speed = 10;
   gate = 0;
+  theme = "gray";
   ffmpeg_executable_path = "ffmpeg";
   for (int index = 0; index != argc; ++index)
     {
@@ -71,7 +72,10 @@ OvertoneApp::show_help_message () const
 
                       << std::setw (argument_length) << "  -s <history speed>"
                       << "speed of the history in lines per frame (default = "
-                      << history_speed << ")";
+                      << history_speed << ")\n"
+
+                      << std::setw (argument_length) << "  -t <theme>"
+                      << "theme (default = " << theme << ")";
 
   std::string descriptions = descriptions_stream.str ();
   cout << usage << endl << endl;
@@ -125,6 +129,11 @@ OvertoneApp::parse_arguments ()
         {
           history_speed = parse_argument (argument, &OvertoneApp::to_unsigned,
                                           true, true, true);
+        }
+      else if (*argument == "-t")
+        {
+          theme = parse_argument (argument, &OvertoneApp::to_string, false,
+                                  false, false);
         }
       else if ((*argument)[0] == '-')
         {
@@ -322,7 +331,7 @@ OvertoneApp::create_the_video ()
   try
     {
       VideoFrame video_frame
-          = VideoFrame (ffmpeg, gain, gate, history_speed, keyboard);
+          = VideoFrame (ffmpeg, gain, gate, theme, history_speed, keyboard);
       unsigned frame = 0;
       while (video_frame.evaluate_frame (frame))
         {

@@ -16,8 +16,8 @@ class VideoFrame
 public:
   using Vector = std::vector<double>;
   using VectorSize = Vector::size_type;
-  VideoFrame (FFmpeg ffmpeg, double gain, double gate, unsigned history_speed,
-              Keyboard keyboard);
+  VideoFrame (FFmpeg ffmpeg, double gain, double gate, std::string theme,
+              unsigned history_speed, Keyboard keyboard);
   void save_frame (const unsigned &frame_index);
   bool evaluate_frame (const unsigned &frame_index);
 

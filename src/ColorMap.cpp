@@ -9,8 +9,8 @@
 #include <stdexcept>
 #include <vector>
 
-ColorMap::ColorMap (std::string color_map_name, double gain, double gate)
-    : gain (gain), gate (gate), color_map_name (std::move (color_map_name))
+ColorMap::ColorMap (std::string theme, double gain, double gate)
+    : gain (gain), gate (gate), theme (std::move (theme))
 {
   if (gain < 0)
     {
@@ -29,21 +29,45 @@ ColorMap::ColorMap (std::string color_map_name, double gain, double gate)
   edge_colors["white"] = hex_string_to_rgb_values ("202020");
   color_maps["white"] = convert_color_map ({ "ffffff", "000000" });
 
-  edge_colors["current_map"] = edge_colors["gray"];
-  color_maps["current_map"] = color_maps["gray"];
-
-  bool color_map_exists
-      = color_maps.find (this->color_map_name) != color_maps.end ();
+  bool color_map_exists = color_maps.find (this->theme) != color_maps.end ();
   bool edge_color_exists
-      = edge_colors.find (this->color_map_name) != edge_colors.end ();
+      = edge_colors.find (this->theme) != edge_colors.end ();
   if (!(color_map_exists && edge_color_exists))
     {
+      auto theme_names = get_theme_names ();
       std::stringstream message;
-      message << "Overtone: Error: Colormap '" << this->color_map_name
-              << "' not found.";
+      message << "Overtone: Error: Theme '" << this->theme
+              << "' not found. Available themes:\n";
+      for (auto theme_name = theme_names.cbegin ();
+           theme_name != theme_names.cend (); ++theme_name)
+        {
+          message << "    -> " << *theme_name;
+          if (theme_name != theme_names.cend () - 1)
+            {
+              message << '\n';
+            }
+        }
       throw std::invalid_argument (message.str ());
     }
   determine_limits ();
+}
+
+std::vector<std::string>
+ColorMap::get_theme_names ()
+{
+  std::vector<std::string> theme_names;
+  theme_names.reserve (color_maps.size ());
+  for (const auto &color_map : color_maps)
+    {
+      std::string theme_name (color_map.first);
+      bool edge_color_exists
+          = edge_colors.find (this->theme) != edge_colors.end ();
+      if (!edge_color_exists)
+        {
+          theme_names.push_back (theme_name);
+        }
+    }
+  return theme_names;
 }
 
 std::vector<unsigned char>
@@ -55,13 +79,13 @@ ColorMap::operator() (double input_value)
 std::vector<unsigned char>
 ColorMap::get_edge_color ()
 {
-  return edge_colors[color_map_name];
+  return edge_colors[theme];
 }
 
 void
 ColorMap::determine_limits ()
 {
-  size_t number_of_limits = color_maps[color_map_name].size ();
+  size_t number_of_limits = color_maps[theme].size ();
   double step_size = 1. / (number_of_limits - 1);
   limits.clear ();
   limits.reserve (number_of_limits);
@@ -79,16 +103,16 @@ ColorMap::evaluate_color (double input_value)
 
   if (input_value <= gate)
     {
-      return color_maps[color_map_name].front ();
+      return color_maps[theme].front ();
     }
   else if (input_value >= limits.back ())
     {
-      return color_maps[color_map_name].back ();
+      return color_maps[theme].back ();
     }
   else
     {
       std::vector<unsigned char> color;
-      const auto &color_map = color_maps[color_map_name];
+      const auto &color_map = color_maps[theme];
       for (size_t index = 0; index != (limits.size () - 1); ++index)
         {
           double lower_limit = limits[index];

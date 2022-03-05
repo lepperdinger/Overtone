@@ -98,6 +98,9 @@ private:
   // gate
   double gate;
 
+  // theme
+  std::string theme;
+
   // speed of the history in lines per video frame
   unsigned history_speed;
 
