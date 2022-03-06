@@ -29,6 +29,9 @@ ColorMap::ColorMap (std::string theme, double gain, double gate)
   edge_colors["white"] = hex_string_to_rgb_values ("202020");
   color_maps["white"] = convert_color_map ({ "ffffff", "000000" });
 
+  edge_colors["matrix"] = hex_string_to_rgb_values ("003000");
+  color_maps["matrix"] = convert_color_map ({ "000000", "00ff00" });
+
   bool color_map_exists = color_maps.find (this->theme) != color_maps.end ();
   bool edge_color_exists
       = edge_colors.find (this->theme) != edge_colors.end ();
