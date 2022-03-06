@@ -63,7 +63,7 @@ FFmpeg::convert_to_mp4 ()
                         + std::to_string (frame_rate) + " -i '"
                         + add_backslashes_if_necessary (frames_directory_path)
                         + "/*.png'" + " -i '" + audio_file_path
-                        + "' -b:v 5000k '" + video_path + "' 2>/dev/null";
+                        + "' -b:v 20000k '" + video_path + "' 2>/dev/null";
   int exit_code = std::system (command.c_str ());
   if (exit_code)
     {
