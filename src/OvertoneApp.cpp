@@ -19,13 +19,9 @@ using std::cout;
 using std::endl;
 
 OvertoneApp::OvertoneApp (int argc, char **argv)
+    : ffmpeg_executable_path ("ffmpeg"), frame_rate (25), gain (35), gate (0),
+      theme ("gray"), history_speed (10)
 {
-  frame_rate = 25;
-  gain = 35.;
-  history_speed = 10;
-  gate = 0;
-  theme = "gray";
-  ffmpeg_executable_path = "ffmpeg";
   for (int index = 0; index != argc; ++index)
     {
       arguments.emplace_back (argv[index]);
