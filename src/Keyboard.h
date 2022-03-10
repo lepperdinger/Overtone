@@ -39,6 +39,8 @@ public:
    */
   bool go_to_next_frame ();
 
+  static void run_tests ();
+
 private:
   // audio spectra of the keyboard sections
   std::vector<Spectrum> spectra;

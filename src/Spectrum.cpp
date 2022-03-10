@@ -3,6 +3,7 @@
 //
 
 #include "Spectrum.h"
+#include "Tests.h"
 #include <cmath>
 
 Spectrum::Spectrum (const WAVE &wave, const std::vector<unsigned> &channels,
@@ -135,9 +136,8 @@ Spectrum::evaluate_spectrum (
   spectra.reserve (number_of_channels);
   for (const unsigned &channel : channels)
     {
-      spectra.emplace_back (evaluate_channel_spectrum (*signal[channel],
-                                                       time_range,
-                                                       frequency_range));
+      spectra.emplace_back (evaluate_channel_spectrum (
+          *signal[channel], time_range, frequency_range));
     }
 
   Vector returned_spectrum;
@@ -265,4 +265,19 @@ double
 Spectrum::abs (double real_part, double imaginary_part)
 {
   return sqrt (sqr (real_part) + sqr (imaginary_part));
+}
+
+void
+Spectrum::run_tests ()
+{
+  double tolerance{ 1e-12 };
+  double frequency{ 440 };
+  double key{ 48 };
+  TEST (std::abs (keys_to_frequencies (key) - frequency) < tolerance)
+  TEST (std::abs (frequencies_to_keys (frequency) - key) < tolerance)
+
+  frequency = 34.55235;
+  TEST (std::abs (keys_to_frequencies (frequencies_to_keys (frequency))
+                  - frequency)
+        < tolerance)
 }

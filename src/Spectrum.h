@@ -74,6 +74,8 @@ public:
     return key_range;
   }
 
+  static void run_tests ();
+
 private:
   // WAVE object that contains the PCM signal.
   WAVE wave;
