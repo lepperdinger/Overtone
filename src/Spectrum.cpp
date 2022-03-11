@@ -270,14 +270,27 @@ Spectrum::abs (double real_part, double imaginary_part)
 void
 Spectrum::run_tests ()
 {
-  double tolerance{ 1e-12 };
-  double frequency{ 440 };
-  double key{ 48 };
-  TEST (std::abs (keys_to_frequencies (key) - frequency) < tolerance)
-  TEST (std::abs (frequencies_to_keys (frequency) - key) < tolerance)
+  {
+    double tolerance{ 1e-12 };
+    double frequency{ 440 };
+    double key{ 48 };
+    TEST (std::abs (keys_to_frequencies (key) - frequency) < tolerance)
+    TEST (std::abs (frequencies_to_keys (frequency) - key) < tolerance)
 
-  frequency = 34.55235;
-  TEST (std::abs (keys_to_frequencies (frequencies_to_keys (frequency))
-                  - frequency)
-        < tolerance)
+    frequency = 34.55235;
+    TEST (std::abs (keys_to_frequencies (frequencies_to_keys (frequency))
+                    - frequency)
+          < tolerance)
+  }
+  {
+    Vector keys{ 22.3, 22.6, 23.3, 28, 30, 44.3 };
+    KeyRange key_range{ 23, 32 };
+    Vector frequencies;
+    std::transform (keys.cbegin (), keys.cend (),
+                    std::back_inserter (frequencies), keys_to_frequencies);
+    VectorRange frequency_range
+        = key_range_to_frequency_range (key_range, frequencies);
+    VectorRange expected{ 1, 5 };
+    TEST (frequency_range == expected)
+  }
 }
