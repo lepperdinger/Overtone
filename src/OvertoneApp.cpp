@@ -58,7 +58,7 @@ OvertoneApp::show_help_message () const
                       << new_line << "(default = " << gain << ")\n"
 
                       << std::setw (argument_length) << "  -G <gate>"
-                      << "all keys below a certain threshold are set to 0"
+                      << "all keys below this threshold are set to 0"
                       << new_line << "(0.0 <= gate <= 1.0) (default = " << gate
                       << ")\n"
 
@@ -76,8 +76,7 @@ OvertoneApp::show_help_message () const
   std::cout << std::endl << usage << std::endl << std::endl;
   std::cout << descriptions << std::endl;
 
-  ColorMap color_map;
-  auto theme_names = color_map.get_theme_names ();
+  auto theme_names = ColorMap ().get_theme_names ();
   std::cout << "\n\nAvailable themes:\n\n";
   for (const auto &theme_name : theme_names)
     {
