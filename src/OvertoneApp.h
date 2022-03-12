@@ -92,13 +92,8 @@ private:
   // video frame rate
   unsigned frame_rate;
 
-  // gain
   double gain;
-
-  // gate
   double gate;
-
-  // theme
   std::string theme;
 
   // speed of the history in lines per video frame
@@ -107,7 +102,6 @@ private:
   // decoded WAVE file
   WAVE wave;
 
-  // FFmpeg
   FFmpeg ffmpeg;
 
   // audio spectrum projected onto the 88 keys of the keyboard
