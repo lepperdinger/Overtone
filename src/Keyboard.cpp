@@ -5,10 +5,6 @@
 #include "Keyboard.h"
 #include "Tests.h"
 
-using std::cerr;
-using std::cout;
-using std::endl;
-
 Keyboard::Keyboard (std::initializer_list<Spectrum> spectra)
     : spectra (spectra), keyboard (std::make_shared<Vector> ())
 {

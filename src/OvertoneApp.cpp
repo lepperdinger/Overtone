@@ -16,10 +16,6 @@
 #include <sys/stat.h>
 #include <vector>
 
-using std::cerr;
-using std::cout;
-using std::endl;
-
 OvertoneApp::OvertoneApp (int argc, char **argv)
     : ffmpeg_executable_path ("ffmpeg"), frame_rate (25), gain (35), gate (0),
       theme ("cyan"), history_speed (10)
@@ -77,8 +73,8 @@ OvertoneApp::show_help_message () const
                       << "theme (default = " << theme << ")";
 
   std::string descriptions = descriptions_stream.str ();
-  cout << endl << usage << endl << endl;
-  cout << descriptions << endl;
+  std::cout << std::endl << usage << std::endl << std::endl;
+  std::cout << descriptions << std::endl;
 
   ColorMap color_map;
   auto theme_names = color_map.get_theme_names ();
@@ -147,7 +143,7 @@ OvertoneApp::parse_arguments ()
         {
           std::string error_message
               = "Error: unrecognized argument: " + *argument;
-          cerr << error_message << endl;
+          std::cerr << error_message << std::endl;
           std::exit (EXIT_FAILURE);
         }
       else
@@ -158,9 +154,10 @@ OvertoneApp::parse_arguments ()
   unsigned number_of_positional_arguments = 2;
   if (positional_arguments.size () != number_of_positional_arguments)
     {
-      cout << "Error: the following arguments are required: <input file path> "
-              "<output file path *.mp4>"
-           << endl;
+      std::cout
+          << "Error: the following arguments are required: <input file path> "
+             "<output file path *.mp4>"
+          << std::endl;
       std::exit (EXIT_FAILURE);
     }
   else
@@ -171,8 +168,9 @@ OvertoneApp::parse_arguments ()
       bool video_file_exists = video_file.good ();
       if (video_file_exists)
         {
-          cerr << "Error: The file '" + video_path + "' does already exist."
-               << endl;
+          std::cerr << "Error: The file '" + video_path
+                           + "' does already exist."
+                    << std::endl;
           std::exit (EXIT_FAILURE);
         }
       else
@@ -183,8 +181,9 @@ OvertoneApp::parse_arguments ()
             && std::string (video_path.cend () - 4, video_path.cend ())
                    == ".mp4"))
         {
-          cerr << "Error: The name of the output file has to end with '.mp4'."
-               << endl;
+          std::cerr
+              << "Error: The name of the output file has to end with '.mp4'."
+              << std::endl;
           std::exit (EXIT_FAILURE);
         }
     }
@@ -202,7 +201,7 @@ OvertoneApp::parse_argument (
   std::string error_message = "Error: argument " + flag + ": invalid value";
   if (current_argument == arguments.cend ())
     {
-      cout << error_message << endl;
+      std::cout << error_message << std::endl;
       std::exit (EXIT_FAILURE);
     }
   else
@@ -213,7 +212,7 @@ OvertoneApp::parse_argument (
         }
       catch (const std::invalid_argument &invalid_argument)
         {
-          cout << error_message << endl;
+          std::cout << error_message << std::endl;
           std::exit (EXIT_FAILURE);
         }
       if (is_integer)
@@ -222,21 +221,22 @@ OvertoneApp::parse_argument (
                                           current_argument->cend (), '.');
           if (search_result != current_argument->cend ())
             {
-              cerr << "Error: argument " << flag
-                   << " : The value has to be an integer." << endl;
+              std::cerr << "Error: argument " << flag
+                        << " : The value has to be an integer." << std::endl;
               std::exit (EXIT_FAILURE);
             }
         }
       if (is_positive && (*current_argument)[0] == '-')
         {
-          cerr << "Error: argument " << flag
-               << " : The value has to be a positive number." << endl;
+          std::cerr << "Error: argument " << flag
+                    << " : The value has to be a positive number."
+                    << std::endl;
           std::exit (EXIT_FAILURE);
         }
       if (is_nonzero && (*current_argument)[0] == '0')
         {
-          cerr << "Error: argument " << flag
-               << " : The value has to be nonzero." << endl;
+          std::cerr << "Error: argument " << flag
+                    << " : The value has to be nonzero." << std::endl;
           std::exit (EXIT_FAILURE);
         }
     }
@@ -250,7 +250,8 @@ OvertoneApp::create_temporary_directory ()
   char *tmp_directory = mkdtemp (directory_template);
   if (tmp_directory == nullptr)
     {
-      cerr << "The creation of the temporary directory failed." << endl;
+      std::cerr << "The creation of the temporary directory failed."
+                << std::endl;
       std::exit (EXIT_FAILURE);
     }
   else
@@ -271,10 +272,10 @@ OvertoneApp::create_frames_directory ()
 {
   if (mkdir (frames_directory_path.c_str (), 0775))
     {
-      cerr << "Error: The directory '" << frames_directory_path
-           << "' does already exist. Please remove, move, or rename this "
-              "directory."
-           << endl;
+      std::cerr << "Error: The directory '" << frames_directory_path
+                << "' does already exist. Please remove, move, or rename this "
+                   "directory."
+                << std::endl;
       std::exit (EXIT_FAILURE);
     }
 }
@@ -289,7 +290,7 @@ OvertoneApp::convert_input_file_to_wav ()
     }
   catch (const std::exception &exception)
     {
-      cerr << "Overtone: Error: " << exception.what () << endl;
+      std::cerr << "Overtone: Error: " << exception.what () << std::endl;
       std::exit (EXIT_FAILURE);
     }
 
@@ -300,7 +301,7 @@ OvertoneApp::convert_input_file_to_wav ()
     }
   catch (const FFmpeg::file_conversion_error &file_conversion_error)
     {
-      cout << file_conversion_error.what () << endl;
+      std::cout << file_conversion_error.what () << std::endl;
       std::exit (EXIT_FAILURE);
     }
 }
@@ -328,7 +329,7 @@ OvertoneApp::initialize_the_keyboard ()
     }
   catch (const std::exception &exception)
     {
-      cerr << "Overtone: Error: " << exception.what () << endl;
+      std::cerr << "Overtone: Error: " << exception.what () << std::endl;
       std::exit (EXIT_FAILURE);
     }
 }
@@ -343,14 +344,15 @@ OvertoneApp::create_the_video ()
       unsigned frame = 0;
       while (video_frame.evaluate_frame (frame))
         {
-          cout << "current frame: " << frame << "          \r" << std::flush;
+          std::cout << "current frame: " << frame << "          \r"
+                    << std::flush;
           ++frame;
         }
-      cout << endl;
+      std::cout << std::endl;
     }
   catch (const std::exception &exception)
     {
-      cerr << "Overtone: Error: " << exception.what () << endl;
+      std::cerr << "Overtone: Error: " << exception.what () << std::endl;
       std::exit (EXIT_FAILURE);
     }
 

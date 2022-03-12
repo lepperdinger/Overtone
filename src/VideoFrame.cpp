@@ -5,10 +5,6 @@
 #include <iomanip>
 #include <iostream>
 
-using std::cerr;
-using std::cout;
-using std::endl;
-
 VideoFrame::VideoFrame (FFmpeg ffmpeg, double gain, double gate,
                         std::string theme, unsigned history_speed,
                         Keyboard keyboard)
