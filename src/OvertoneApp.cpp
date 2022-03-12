@@ -54,7 +54,10 @@ OvertoneApp::~OvertoneApp () { delete_temporary_files (); }
 void
 OvertoneApp::show_help_message () const
 {
-  std::string usage = "Overtone [options]... <input file> <output file *.mp4>";
+  std::string title = "Overtone: A Music Visualizer";
+  std::string version = "Alpha version 0.2.0";
+  std::string usage =
+      "Usage: Overtone [options]... <input file> <output file *.mp4>";
 
   std::stringstream descriptions_stream;
   descriptions_stream << std::left;
@@ -92,16 +95,17 @@ OvertoneApp::show_help_message () const
                       << "theme (default = " << theme << ")";
 
   std::string descriptions = descriptions_stream.str ();
-  std::cout << std::endl << usage << std::endl << std::endl;
-  std::cout << descriptions << std::endl;
+  std::cout << title << "\n\n"
+            << version << "\n\n"
+            << usage << "\n\n"
+            << descriptions << std::endl;
 
   auto theme_names = ColorMap ().get_theme_names ();
-  std::cout << "\n\nAvailable themes:\n\n";
+  std::cout << "\nAvailable themes:\n";
   for (const auto &theme_name : theme_names)
     {
       std::cout << "  -> " << theme_name << std::endl;
     }
-  std::cout << std::endl;
 }
 
 void

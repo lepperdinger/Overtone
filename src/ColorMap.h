@@ -84,7 +84,6 @@ private:
 
   bool check_if_theme_exists (const std::string &theme_name);
 
-
   static double linear_interpolation (std::vector<double> lower_point,
                                       std::vector<double> upper_point,
                                       double x_value);
