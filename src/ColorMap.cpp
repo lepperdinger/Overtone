@@ -9,6 +9,8 @@
 #include <stdexcept>
 #include <vector>
 
+ColorMap::ColorMap () : gain (1.), gate (0.) { initialize_themes (); }
+
 ColorMap::ColorMap (std::string theme, double gain, double gate)
     : gain (gain), gate (gate), theme (std::move (theme))
 {
@@ -16,13 +18,45 @@ ColorMap::ColorMap (std::string theme, double gain, double gate)
     {
       throw std::out_of_range ("The argument `gain` is negative.");
     }
-
   if (gate < 0 || gate > 1)
     {
       throw std::out_of_range (
           "The argument `gate` is not within the interval 0 <= gate <= 1.");
     }
+  initialize_themes ();
+  bool theme_exists = check_if_theme_exists (this->theme);
+  if (!theme_exists)
+    {
+      auto theme_names = get_theme_names ();
+      std::stringstream message;
+      message << "Overtone: Error: Theme '" << this->theme
+              << "' not found. Available themes:\n";
+      for (auto theme_name = theme_names.cbegin ();
+           theme_name != theme_names.cend (); ++theme_name)
+        {
+          message << "    -> " << *theme_name;
+          if (theme_name != theme_names.cend () - 1)
+            {
+              message << '\n';
+            }
+        }
+      throw std::invalid_argument (message.str ());
+    }
+  determine_limits ();
+}
 
+bool
+ColorMap::check_if_theme_exists (const std::string &theme_name)
+{
+  bool color_map_exists = color_maps.find (theme_name) != color_maps.end ();
+  bool edge_color_exists = edge_colors.find (theme_name) != edge_colors.end ();
+  bool theme_exists = color_map_exists && edge_color_exists;
+  return theme_exists;
+}
+
+void
+ColorMap::initialize_themes ()
+{
   edge_colors["gray"] = hex_string_to_rgb_values ("000000");
   color_maps["gray"] = convert_color_map ({ "202020", "ffffff" });
 
@@ -50,28 +84,6 @@ ColorMap::ColorMap (std::string theme, double gain, double gate)
   color_maps["purple"]
       = convert_color_map ({ "0e042c", "230044", "3c076c", "581d96", "7d2cbc",
                              "a050df", "c57ffa", "e0adfb" });
-
-  bool color_map_exists = color_maps.find (this->theme) != color_maps.end ();
-  bool edge_color_exists
-      = edge_colors.find (this->theme) != edge_colors.end ();
-  if (!(color_map_exists && edge_color_exists))
-    {
-      auto theme_names = get_theme_names ();
-      std::stringstream message;
-      message << "Overtone: Error: Theme '" << this->theme
-              << "' not found. Available themes:\n";
-      for (auto theme_name = theme_names.cbegin ();
-           theme_name != theme_names.cend (); ++theme_name)
-        {
-          message << "    -> " << *theme_name;
-          if (theme_name != theme_names.cend () - 1)
-            {
-              message << '\n';
-            }
-        }
-      throw std::invalid_argument (message.str ());
-    }
-  determine_limits ();
 }
 
 std::vector<std::string>

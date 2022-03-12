@@ -3,11 +3,13 @@
 //
 
 #include "OvertoneApp.h"
+#include "ColorMap.h"
 #include "FFmpeg.h"
 #include "Keyboard.h"
 #include "Spectrum.h"
 #include "VideoFrame.h"
 #include "WAVE.h"
+
 #include <iomanip>
 #include <iostream>
 #include <string>
@@ -20,7 +22,7 @@ using std::endl;
 
 OvertoneApp::OvertoneApp (int argc, char **argv)
     : ffmpeg_executable_path ("ffmpeg"), frame_rate (25), gain (35), gate (0),
-      theme ("gray"), history_speed (10)
+      theme ("cyan"), history_speed (10)
 {
   for (int index = 0; index != argc; ++index)
     {
@@ -37,8 +39,7 @@ OvertoneApp::~OvertoneApp () { delete_temporary_files (); }
 void
 OvertoneApp::show_help_message () const
 {
-  std::string usage
-      = "Overtone [options]... <input file path> <output file path *.mp4>";
+  std::string usage = "Overtone [options]... <input file> <output file *.mp4>";
 
   std::stringstream descriptions_stream;
   descriptions_stream << std::left;
@@ -57,10 +58,12 @@ OvertoneApp::show_help_message () const
                       << "path of the FFmpeg executable\n"
 
                       << std::setw (argument_length) << "  -g <gain>"
-                      << "gain (default = " << gain << ")\n"
+                      << "multiplies each key of the keyboard by this value"
+                      << new_line << "(default = " << gain << ")\n"
 
                       << std::setw (argument_length) << "  -G <gate>"
-                      << "gate (0.0 <= gate <= 1.0) (default = " << gate
+                      << "all keys below a certain threshold are set to 0"
+                      << new_line << "(0.0 <= gate <= 1.0) (default = " << gate
                       << ")\n"
 
                       << std::setw (argument_length) << "  -h, --help"
@@ -74,8 +77,17 @@ OvertoneApp::show_help_message () const
                       << "theme (default = " << theme << ")";
 
   std::string descriptions = descriptions_stream.str ();
-  cout << usage << endl << endl;
+  cout << endl << usage << endl << endl;
   cout << descriptions << endl;
+
+  ColorMap color_map;
+  auto theme_names = color_map.get_theme_names ();
+  std::cout << "\n\nAvailable themes:\n\n";
+  for (const auto &theme_name : theme_names)
+    {
+      std::cout << "  -> " << theme_name << std::endl;
+    }
+  std::cout << std::endl;
 }
 
 void
