@@ -14,14 +14,28 @@
 class VideoFrame
 {
 public:
-  using Vector = std::vector<double>;
-  using VectorSize = Vector::size_type;
+  /**
+   * @param ffmpeg
+   * @param gain multiplies each key of the keyboard by this value
+   * @param gate all keys below this threshold are set to 0
+   *             (0.0 <= gate <= 1.0)
+   * @param theme name of the color theme
+   * @param history_speed speed of the history in pixel rows per video frame
+   * @param keyboard
+   */
   VideoFrame (FFmpeg ffmpeg, double gain, double gate, std::string theme,
               unsigned history_speed, Keyboard keyboard);
-  void save_frame (const unsigned &frame_index);
+
+  /**
+   * Evaluates the current video frame.
+   * @param frame_index saves the video frame into frame_index.png
+   * @return false if it's the last frame of the video
+   */
   bool evaluate_frame (const unsigned &frame_index);
 
 private:
+  using Vector = std::vector<double>;
+  using VectorSize = Vector::size_type;
   using Pixel = std::vector<unsigned char>;
   using Row = std::vector<Pixel>;
   using RowSize = Row::size_type;
@@ -29,19 +43,28 @@ private:
   using FrameSize = Frame::size_type;
   Frame frame;
   Row tmp_row;
+
+  // speed of the history in pixel rows per video frame
   unsigned history_speed;
+
   FFmpeg ffmpeg;
   unsigned frame_width;
   unsigned frame_height;
+
+  // indices of the white_keys
   const std::vector<VectorSize> white_keys;
+
+  // indices of the black keys
   const std::vector<VectorSize> black_keys;
+
+  // RGB color of the current pixel
   unsigned char red, green, blue;
+
   Keyboard keyboard;
   ColorMap color_map;
 
-  void create_frame ();
+  void initialize_video_frame ();
   inline void set_pixel (const FrameSize &row, const FrameSize &column);
-
   inline void set_color (double input_value);
   inline void set_edge_color ();
   inline void layer_0_background ();
@@ -50,6 +73,12 @@ private:
   inline void layer_3_white_keys ();
   inline void layer_4_black_keys ();
   inline void layer_5_horizontal_separator ();
+
+  /**
+   * Saves the current video frame into the file frame_index.png.
+   * @param frame_index
+   */
+  void save_frame (const unsigned &frame_index);
 };
 
 #endif // OVERTONE_VIDEOFRAME_H

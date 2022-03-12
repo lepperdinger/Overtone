@@ -25,13 +25,13 @@ VideoFrame::VideoFrame (FFmpeg ffmpeg, double gain, double gate,
       throw std::out_of_range (
           "The argument `history_speed` is not within the interval [1, 786].");
     }
-  create_frame ();
+  initialize_video_frame ();
   layer_0_background ();
   layer_1_frame ();
 }
 
 void
-VideoFrame::create_frame ()
+VideoFrame::initialize_video_frame ()
 {
   for (FrameSize row_index = 0; row_index < frame_height; ++row_index)
     {
