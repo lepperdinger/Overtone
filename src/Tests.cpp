@@ -11,6 +11,6 @@ void
 Tests::run_all_tests ()
 {
   ColorMap::run_tests ();
-  Keyboard::run_tests();
-  Spectrum::run_tests();
+  Keyboard::run_tests ();
+  Spectrum::run_tests ();
 }

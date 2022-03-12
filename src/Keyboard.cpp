@@ -40,8 +40,8 @@ Keyboard::evaluate_keys ()
             }
           if (weighted_spectrum_accumulator != 0.0)
             {
-              (*keyboard)[assigned_key]
-                  += weighted_spectrum_accumulator / weight_accumulator;
+              (*keyboard)[assigned_key] +=
+                  weighted_spectrum_accumulator / weight_accumulator;
             }
         }
     }

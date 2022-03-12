@@ -135,8 +135,8 @@ WAVE::parse_data_chunk (std::ifstream &file)
   using DataSize = std::vector<std::vector<double> >::size_type;
   using ChannelSize = std::vector<double>::size_type;
 
-  ChannelSize number_of_samples_per_channel
-      = data_chunk_size / number_of_channels / (bits_per_sample / 8);
+  ChannelSize number_of_samples_per_channel =
+      data_chunk_size / number_of_channels / (bits_per_sample / 8);
 
   for (DataSize channel = 0; channel != number_of_channels; ++channel)
     {

@@ -141,8 +141,8 @@ OvertoneApp::parse_arguments ()
         }
       else if ((*argument)[0] == '-')
         {
-          std::string error_message
-              = "Error: unrecognized argument: " + *argument;
+          std::string error_message =
+              "Error: unrecognized argument: " + *argument;
           std::cerr << error_message << std::endl;
           std::exit (EXIT_FAILURE);
         }
@@ -339,8 +339,8 @@ OvertoneApp::create_the_video ()
 {
   try
     {
-      VideoFrame video_frame
-          = VideoFrame (ffmpeg, gain, gate, theme, history_speed, keyboard);
+      VideoFrame video_frame =
+          VideoFrame (ffmpeg, gain, gate, theme, history_speed, keyboard);
       unsigned frame = 0;
       while (video_frame.evaluate_frame (frame))
         {

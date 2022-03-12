@@ -37,8 +37,8 @@ Spectrum::Spectrum (const WAVE &wave, const std::vector<unsigned> &channels,
         }
     }
   std::vector<unsigned> unique_channels = channels;
-  auto unique_end
-      = std::unique (unique_channels.begin (), unique_channels.end ());
+  auto unique_end =
+      std::unique (unique_channels.begin (), unique_channels.end ());
   if (unique_end != unique_channels.cend ())
     {
       throw std::invalid_argument ("The elements of channels are not unique.");
@@ -77,10 +77,10 @@ void
 Spectrum::evaluate_frame ()
 {
   VectorRange time_range = evaluate_time_range ();
-  Vector all_frequencies
-      = evaluate_all_frequencies (time_range, wave.get_sample_rate ());
-  VectorRange frequency_range
-      = key_range_to_frequency_range (key_range, all_frequencies);
+  Vector all_frequencies =
+      evaluate_all_frequencies (time_range, wave.get_sample_rate ());
+  VectorRange frequency_range =
+      key_range_to_frequency_range (key_range, all_frequencies);
   auto all_frequencies_begin = all_frequencies.cbegin ();
   frequencies->assign (all_frequencies_begin + frequency_range.first,
                        all_frequencies_begin + frequency_range.second);
@@ -99,19 +99,19 @@ Spectrum::evaluate_time_range ()
   else
     {
       VectorRange time_range;
-      VectorSize half_missing_samples
-          = ((minimum_samples - samples_per_video_frame) / 2);
+      VectorSize half_missing_samples =
+          ((minimum_samples - samples_per_video_frame) / 2);
       if (time_range_video_frame.first > half_missing_samples)
         {
-          time_range.first
-              = time_range_video_frame.first - half_missing_samples;
+          time_range.first =
+              time_range_video_frame.first - half_missing_samples;
         }
       else
         {
           time_range.first = 0;
         }
-      VectorSize new_index
-          = time_range_video_frame.second + half_missing_samples;
+      VectorSize new_index =
+          time_range_video_frame.second + half_missing_samples;
       if (new_index < time_size)
         {
           time_range.second = new_index;
@@ -181,12 +181,12 @@ Spectrum::evaluate_channel_spectrum (const Vector &channel,
            time_index != time_range.second; ++time_index)
         {
           current_sample = channel[time_index];
-          fourier_negative_imaginary_part
-              += (current_sample
-                  * sin (constant * frequency_index_double * time_index));
-          fourier_real_part
-              += (current_sample
-                  * cos (constant * frequency_index_double * time_index));
+          fourier_negative_imaginary_part +=
+              (current_sample
+               * sin (constant * frequency_index_double * time_index));
+          fourier_real_part +=
+              (current_sample
+               * cos (constant * frequency_index_double * time_index));
         }
       spectrum.push_back (
           2. * abs (fourier_real_part, fourier_negative_imaginary_part)
@@ -218,16 +218,16 @@ Spectrum::key_range_to_frequency_range (const KeyRange &key_range,
 {
   double lower_frequency = keys_to_frequencies (key_range.first - 0.5);
   double upper_frequency = keys_to_frequencies (key_range.second - 0.5);
-  auto lower_iterator
-      = std::find_if (all_frequencies.cbegin (), all_frequencies.cend (),
-                      [&lower_frequency] (const double &frequency) {
-                        return lower_frequency < frequency;
-                      });
-  auto upper_iterator
-      = std::find_if (all_frequencies.cbegin (), all_frequencies.cend (),
-                      [&upper_frequency] (const double &frequency) {
-                        return upper_frequency < frequency;
-                      });
+  auto lower_iterator =
+      std::find_if (all_frequencies.cbegin (), all_frequencies.cend (),
+                    [&lower_frequency] (const double &frequency) {
+                      return lower_frequency < frequency;
+                    });
+  auto upper_iterator =
+      std::find_if (all_frequencies.cbegin (), all_frequencies.cend (),
+                    [&upper_frequency] (const double &frequency) {
+                      return upper_frequency < frequency;
+                    });
   VectorSize lower_index = lower_iterator - all_frequencies.cbegin ();
   VectorSize upper_index = upper_iterator - all_frequencies.cbegin ();
   return { lower_index, upper_index };
@@ -288,8 +288,8 @@ Spectrum::run_tests ()
     Vector frequencies;
     std::transform (keys.cbegin (), keys.cend (),
                     std::back_inserter (frequencies), keys_to_frequencies);
-    VectorRange frequency_range
-        = key_range_to_frequency_range (key_range, frequencies);
+    VectorRange frequency_range =
+        key_range_to_frequency_range (key_range, frequencies);
     VectorRange expected{ 1, 5 };
     TEST (frequency_range == expected)
   }

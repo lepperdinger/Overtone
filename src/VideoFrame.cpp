@@ -66,8 +66,8 @@ VideoFrame::evaluate_frame (const unsigned &frame_index)
 void
 VideoFrame::save_frame (const unsigned &frame_index)
 {
-  std::string ppm_file_path
-      = ffmpeg.get_frames_directory_path () + "/current_frame.ppm";
+  std::string ppm_file_path =
+      ffmpeg.get_frames_directory_path () + "/current_frame.ppm";
   std::ofstream ppm_file (ppm_file_path);
   if (!ppm_file)
     {

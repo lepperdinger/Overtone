@@ -67,23 +67,23 @@ ColorMap::initialize_themes ()
   color_maps["matrix"] = convert_color_map ({ "000000", "00ff00" });
 
   edge_colors["cyan"] = hex_string_to_rgb_values ("000000");
-  color_maps["cyan"]
-      = convert_color_map ({ "202020", "349d8c", "7ce1d2", "dcdadb" });
+  color_maps["cyan"] =
+      convert_color_map ({ "202020", "349d8c", "7ce1d2", "dcdadb" });
 
   edge_colors["fire"] = hex_string_to_rgb_values ("000000");
-  color_maps["fire"] = convert_color_map (
-      { "20030d", "32021b", "6f0511", "980506", "cb0503", "df3405", "eb6001",
-        "f78c01", "f6a805", "febb08" });
+  color_maps["fire"] =
+      convert_color_map ({ "20030d", "32021b", "6f0511", "980506", "cb0503",
+                           "df3405", "eb6001", "f78c01", "f6a805", "febb08" });
 
   edge_colors["vintage"] = hex_string_to_rgb_values ("000000");
-  color_maps["vintage"]
-      = convert_color_map ({ "231f22", "777b62", "999a7c", "dbaa93", "efdfa4",
-                             "facd66", "d08e5f", "9b7e68" });
+  color_maps["vintage"] =
+      convert_color_map ({ "231f22", "777b62", "999a7c", "dbaa93", "efdfa4",
+                           "facd66", "d08e5f", "9b7e68" });
 
   edge_colors["purple"] = hex_string_to_rgb_values ("000000");
-  color_maps["purple"]
-      = convert_color_map ({ "0e042c", "230044", "3c076c", "581d96", "7d2cbc",
-                             "a050df", "c57ffa", "e0adfb" });
+  color_maps["purple"] =
+      convert_color_map ({ "0e042c", "230044", "3c076c", "581d96", "7d2cbc",
+                           "a050df", "c57ffa", "e0adfb" });
 }
 
 std::vector<std::string>
@@ -94,8 +94,8 @@ ColorMap::get_theme_names ()
   for (const auto &color_map : color_maps)
     {
       std::string theme_name (color_map.first);
-      bool edge_color_exists
-          = edge_colors.find (this->theme) != edge_colors.end ();
+      bool edge_color_exists =
+          edge_colors.find (this->theme) != edge_colors.end ();
       if (!edge_color_exists)
         {
           theme_names.push_back (theme_name);
@@ -211,8 +211,8 @@ ColorMap::hex_string_to_rgb_values (const std::string &hex_string)
     {
       size_t string_index = color_index * 2;
       std::string sub_string = hex_string.substr (string_index, 2);
-      unsigned char rgb_value
-          = std::strtoul (sub_string.c_str (), nullptr, base);
+      unsigned char rgb_value =
+          std::strtoul (sub_string.c_str (), nullptr, base);
       rgb_values.push_back (rgb_value);
     }
 
