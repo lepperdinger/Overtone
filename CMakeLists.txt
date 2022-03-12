@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.16)
 project(Overtone)
 project(tests)
 
-set(CMAKE_CXX_STANDARD 14)
-
 include_directories(src)
 
 file(GLOB SRC CONFIGURE_DEPENDS "src/*.h" "src/*.cpp")
