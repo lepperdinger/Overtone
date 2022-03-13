@@ -356,20 +356,35 @@ OvertoneApp::initialize_the_keyboard ()
     }
 }
 
+unsigned
+OvertoneApp::evaluate_number_of_video_frames ()
+{
+  auto number_of_audio_samples = wave.get_signal ()[0]->size ();
+  unsigned audio_sample_rate = wave.get_sample_rate ();
+  double time_in_seconds = 1. * number_of_audio_samples / audio_sample_rate;
+  unsigned number_of_frames = frame_rate * time_in_seconds;
+  return number_of_frames;
+}
+
 void
 OvertoneApp::create_the_video ()
 {
+  unsigned number_of_video_frames = evaluate_number_of_video_frames ();
   try
     {
       VideoFrame video_frame =
           VideoFrame (ffmpeg, gain, gate, theme, history_speed, keyboard);
-      unsigned frame = 0;
-      while (video_frame.evaluate_frame (frame))
+      unsigned frame{ 1 };
+      unsigned frame_index;
+      do
         {
-          std::cout << "current frame: " << frame << "          \r"
-                    << std::flush;
+          unsigned percentage = frame * 100 / number_of_video_frames;
+          std::cout << percentage << " % (frame " << frame << " / "
+                    << number_of_video_frames << ")          \r" << std::flush;
           ++frame;
+          frame_index = frame - 2;
         }
+      while (video_frame.evaluate_frame (frame_index));
       std::cout << std::endl;
     }
   catch (const std::exception &exception)

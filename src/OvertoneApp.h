@@ -87,6 +87,7 @@ private:
   void convert_input_file_to_wav ();
   void decode_wav_file ();
   void initialize_the_keyboard ();
+  unsigned evaluate_number_of_video_frames ();
   void create_the_video ();
   void delete_temporary_files ();
 
