@@ -69,12 +69,6 @@ public:
     }
 
   /**
-   * Shows information about the WAVE file, e.g., bit rate, bit depth,
-   * number of channels, ...
-   */
-  void show_file_contents () const;
-
-  /**
    * Returns the audio signal.
    * @return audio signal
    */

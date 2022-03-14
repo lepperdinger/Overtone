@@ -192,34 +192,3 @@ WAVE::decode ()
   parse_format_chunk (file);
   parse_data_chunk (file);
 }
-
-void
-WAVE::show_file_contents () const
-{
-  // RIFF Chunk
-  std::cout << "chunk_id  : " << chunk_id << std::endl;
-  std::cout << "chunk_size: " << chunk_size << " B" << std::endl;
-  std::cout << "format    : " << format << std::endl;
-
-  // Format sub-chunk
-  std::cout << std::endl;
-  std::cout << "format_chunk_id   : " << format_chunk_id << std::endl;
-  std::cout << "format_chunk_size : " << format_chunk_size << " B"
-            << std::endl;
-  std::cout << "audio_format      : " << audio_format;
-  if (audio_format == 1)
-    {
-      std::cout << " (= PCM)";
-    }
-  std::cout << std::endl;
-  std::cout << "number_of_channels: " << number_of_channels << std::endl;
-  std::cout << "sample_rate       : " << sample_rate << " Hz" << std::endl;
-  std::cout << "byte_rate         : " << byte_rate << " B/s" << std::endl;
-  std::cout << "block_align       : " << block_align << " B" << std::endl;
-  std::cout << "bits_per_sample   : " << bits_per_sample << " b" << std::endl;
-
-  // Data sub-chunk
-  std::cout << std::endl;
-  std::cout << "data_chunk_id  : " << data_chunk_id << std::endl;
-  std::cout << "data_chunk_size: " << data_chunk_size << " B" << std::endl;
-}
