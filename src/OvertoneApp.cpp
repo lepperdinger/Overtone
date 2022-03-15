@@ -88,7 +88,7 @@ OvertoneApp::show_help_message () const
                       << "show this help message and exit\n"
 
                       << std::setw (argument_length) << "  -s <history speed>"
-                      << "speed of the history in pixel rows per video frame"
+                      << "speed of the history in pixels per video frame"
                       << new_line << "(default = " << history_speed << ")\n"
 
                       << std::setw (argument_length) << "  -t <theme>"
