@@ -54,8 +54,7 @@ OvertoneApp::~OvertoneApp () { delete_temporary_files (); }
 void
 OvertoneApp::show_help_message () const
 {
-  std::string title = "Overtone: A Music Visualizer";
-  std::string version = "Alpha version 0.2.0";
+  std::string title = "Overtone: A Music Visualizer (version 0.2.0)";
   std::string usage =
       "Usage: Overtone [options]... <input file> <output file *.mp4>";
 
@@ -96,7 +95,6 @@ OvertoneApp::show_help_message () const
 
   std::string descriptions = descriptions_stream.str ();
   std::cout << title << "\n\n"
-            << version << "\n\n"
             << usage << "\n\n"
             << descriptions << std::endl;
 
