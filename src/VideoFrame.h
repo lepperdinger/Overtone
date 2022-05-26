@@ -30,8 +30,7 @@
 #include <string>
 #include <vector>
 
-class VideoFrame
-{
+class VideoFrame {
 public:
   /**
    * @param ffmpeg
@@ -42,15 +41,15 @@ public:
    * @param history_speed speed of the history in pixel rows per video frame
    * @param keyboard
    */
-  VideoFrame (FFmpeg ffmpeg, double gain, double gate, std::string theme,
-              unsigned history_speed, Keyboard keyboard);
+  VideoFrame(FFmpeg ffmpeg, double gain, double gate, std::string theme,
+             unsigned history_speed, Keyboard keyboard);
 
   /**
    * Evaluates the current video frame.
    * @param frame_index saves the video frame into frame_index.png
    * @return false if it's the last frame of the video
    */
-  bool evaluate_frame (const unsigned &frame_index);
+  bool evaluate_frame(const unsigned &frame_index);
 
 private:
   using Vector = std::vector<double>;
@@ -82,22 +81,22 @@ private:
   Keyboard keyboard;
   ColorMap color_map;
 
-  void initialize_video_frame ();
-  inline void set_pixel (const FrameSize &row, const FrameSize &column);
-  inline void set_color (double input_value);
-  inline void set_edge_color ();
-  inline void layer_0_background ();
-  inline void layer_1_frame ();
-  inline void layer_2_history ();
-  inline void layer_3_white_keys ();
-  inline void layer_4_black_keys ();
-  inline void layer_5_horizontal_separator ();
+  void initialize_video_frame();
+  inline void set_pixel(const FrameSize &row, const FrameSize &column);
+  inline void set_color(double input_value);
+  inline void set_edge_color();
+  inline void layer_0_background();
+  inline void layer_1_frame();
+  inline void layer_2_history();
+  inline void layer_3_white_keys();
+  inline void layer_4_black_keys();
+  inline void layer_5_horizontal_separator();
 
   /**
    * Saves the current video frame into the file frame_index.png.
    * @param frame_index
    */
-  void save_frame (const unsigned &frame_index);
+  void save_frame(const unsigned &frame_index);
 };
 
 #endif // OVERTONE_VIDEOFRAME_H

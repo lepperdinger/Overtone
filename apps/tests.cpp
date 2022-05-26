@@ -23,8 +23,4 @@
 
 #include "Tests.h"
 
-int
-main ()
-{
-  Tests::run_all_tests ();
-}
+int main() { Tests::run_all_tests(); }

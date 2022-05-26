@@ -29,23 +29,22 @@
 #include "Spectrum.h"
 #include "WAVE.h"
 
-class OvertoneApp
-{
+class OvertoneApp {
 public:
-  OvertoneApp (int argc, char **argv);
-  ~OvertoneApp ();
-  void run ();
+  OvertoneApp(int argc, char **argv);
+  ~OvertoneApp();
+  void run();
 
 private:
   /**
    * Parses the command line arguments.
    */
-  void parse_arguments ();
+  void parse_arguments();
 
   /**
    * Prints the help message.
    */
-  void show_help_message () const;
+  void show_help_message() const;
 
   /**
    * Parses the command line flag pattern -<flag> <value>.
@@ -62,34 +61,22 @@ private:
    * @return the parsed and converted value of the flag
    */
   template <typename T>
-  T parse_argument (std::vector<std::string>::const_iterator &current_argument,
-                    T (*conversion) (const std::string &), bool is_positive,
-                    bool is_nonzero, bool is_integer);
-  static unsigned
-  to_unsigned (const std::string &s)
-  {
-    return std::stoul (s);
-  };
-  static double
-  to_double (const std::string &s)
-  {
-    return std::stod (s);
-  };
-  static std::string
-  to_string (const std::string &s)
-  {
-    return s;
-  };
+  T parse_argument(std::vector<std::string>::const_iterator &current_argument,
+                   T (*conversion)(const std::string &), bool is_positive,
+                   bool is_nonzero, bool is_integer);
+  static unsigned to_unsigned(const std::string &s) { return std::stoul(s); };
+  static double to_double(const std::string &s) { return std::stod(s); };
+  static std::string to_string(const std::string &s) { return s; };
 
-  void evaluate_the_file_paths ();
-  void create_temporary_directory ();
-  void create_frames_directory ();
-  void convert_input_file_to_wav ();
-  void decode_wav_file ();
-  void initialize_the_keyboard ();
-  unsigned evaluate_number_of_video_frames ();
-  void create_the_video ();
-  void delete_temporary_files ();
+  void evaluate_the_file_paths();
+  void create_temporary_directory();
+  void create_frames_directory();
+  void convert_input_file_to_wav();
+  void decode_wav_file();
+  void initialize_the_keyboard();
+  unsigned evaluate_number_of_video_frames();
+  void create_the_video();
+  void delete_temporary_files();
 
   // command line arguments
   std::vector<std::string> arguments;

@@ -31,8 +31,7 @@
 /**
  * Class for evaluating the audio spectra for each video frame
  */
-class Spectrum
-{
+class Spectrum {
 public:
   using Vector = std::vector<double>;
   using VectorSize = Vector::size_type;
@@ -40,60 +39,48 @@ public:
   using KeyRange = std::pair<unsigned char, unsigned char>;
 
   /**
-   * Evaluates the spectrum of the first frame. The spectrum is the average
-   * of the spectra of the selected channels. The spectrum gets evaluated
-   * for frequencies between the key range key_range.first - 0.5 and
-   * key_range.second + 0.5. If the number of audio samples within a video
-   * frame is smaller than minimum_samples, the range of an audio frame gets
-   * extended on both sides.
+   * Evaluates the spectrum of the first frame. The spectrum is the average of
+   * the spectra of the selected channels. The spectrum gets evaluated for
+   * frequencies between the key range key_range.first - 0.5 and
+   * key_range.second + 0.5. If the number of audio samples within a video frame
+   * is smaller than minimum_samples, the range of an audio frame gets extended
+   * on both sides.
    * @param wave WAVE object that contains the PCM signal.
    * @param channels selected channels (all channels if empty)
    * @param frame_rate video frame rate
    * @param key_range key range
    * @param minimum_samples minimum audio samples per video frame
    */
-  explicit Spectrum (const WAVE &wave, const std::vector<unsigned> &channels,
-                     const unsigned &frame_rate, KeyRange key_range,
-                     const VectorSize &minimum_samples);
+  explicit Spectrum(const WAVE &wave, const std::vector<unsigned> &channels,
+                    const unsigned &frame_rate, KeyRange key_range,
+                    const VectorSize &minimum_samples);
 
   /**
    * Evaluates the next frame.
    * @return False if there is no next video frame and an evaluation of the
    *         next frame, therefore, isn't possible.
    */
-  bool go_to_next_frame ();
+  bool go_to_next_frame();
 
   /**
    * Returns the spectrum.
    * @return spectrum
    */
-  std::shared_ptr<Vector>
-  get_spectrum () const
-  {
-    return spectrum;
-  }
+  std::shared_ptr<Vector> get_spectrum() const { return spectrum; }
 
   /**
    * Returns the keyboard of the spectrum.
    * @return keys
    */
-  std::shared_ptr<Vector>
-  get_keys () const
-  {
-    return keys;
-  }
+  std::shared_ptr<Vector> get_keys() const { return keys; }
 
   /**
    * Returns the key range within which the spectrum has been evaluated.
    * @return key range
    */
-  KeyRange
-  get_key_range () const
-  {
-    return key_range;
-  }
+  KeyRange get_key_range() const { return key_range; }
 
-  static void run_tests ();
+  static void run_tests();
 
 private:
   // WAVE object that contains the PCM signal.
@@ -129,14 +116,14 @@ private:
   /**
    * Evaluates the spectrum of the current video frame.
    */
-  void evaluate_frame ();
+  void evaluate_frame();
 
   /**
    * Evaluates the time index range of the current video frame. The time range
    * gets extended if samples_per_video_frame >= minimum_samples.
    * @return time index range
    */
-  VectorRange evaluate_time_range ();
+  VectorRange evaluate_time_range();
 
   /**
    * Evaluates the spectrum of a single channel within a specified time and
@@ -146,14 +133,14 @@ private:
    * @param frequency_range frequency range
    * @return spectrum of the selected channel
    */
-  static Vector evaluate_channel_spectrum (const Vector &channel,
-                                           const VectorRange &time_range,
-                                           const VectorRange &frequency_range);
+  static Vector evaluate_channel_spectrum(const Vector &channel,
+                                          const VectorRange &time_range,
+                                          const VectorRange &frequency_range);
   static Spectrum::Vector
-  evaluate_spectrum (const std::vector<std::shared_ptr<Vector> > &signal,
-                     const std::vector<unsigned> &channels,
-                     const VectorRange &time_range,
-                     const VectorRange &frequency_range);
+  evaluate_spectrum(const std::vector<std::shared_ptr<Vector>> &signal,
+                    const std::vector<unsigned> &channels,
+                    const VectorRange &time_range,
+                    const VectorRange &frequency_range);
 
   /**
    * Evaluates all the frequencies of the Fourier transform. The Fourier
@@ -163,8 +150,8 @@ private:
    * @param sample_rate audio sample rate
    * @return all frequencies of the Fourier transform
    */
-  static Vector evaluate_all_frequencies (const VectorRange &time_range,
-                                          const VectorSize &sample_rate);
+  static Vector evaluate_all_frequencies(const VectorRange &time_range,
+                                         const VectorSize &sample_rate);
 
   /**
    * Returns the index range of the frequencies between the key range
@@ -174,22 +161,22 @@ private:
    * @return frequencies that contain the specified key range
    */
   static VectorRange
-  key_range_to_frequency_range (const KeyRange &key_range,
-                                const Vector &all_frequencies);
+  key_range_to_frequency_range(const KeyRange &key_range,
+                               const Vector &all_frequencies);
 
   /**
    * Converts the frequencies to keyboard.
    * @param frequencies frequencies
    * @return keys
    */
-  inline static Vector evaluate_keys (const Vector &frequencies);
+  inline static Vector evaluate_keys(const Vector &frequencies);
 
   /**
    * Square root.
    * @param value input value
    * @return square root of value
    */
-  inline static double sqr (double value);
+  inline static double sqr(double value);
 
   /**
    * Absolute value of a complex number.
@@ -197,21 +184,21 @@ private:
    * @param imaginary_part imaginary part of the complex number
    * @return absolute value of the complex number
    */
-  inline static double abs (double real_part, double imaginary_part);
+  inline static double abs(double real_part, double imaginary_part);
 
   /**
    * Converts a key to a frequency.
    * @param key key
    * @return frequency
    */
-  inline static double keys_to_frequencies (const double &key);
+  inline static double keys_to_frequencies(const double &key);
 
   /**
    * Converts a frequency to a key.
    * @param frequency frequency
    * @return key
    */
-  inline static double frequencies_to_keys (const double &frequency);
+  inline static double frequencies_to_keys(const double &frequency);
 };
 
 #endif // OVERTONE_SPECTRUM_H

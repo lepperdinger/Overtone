@@ -26,10 +26,8 @@
 #include "Keyboard.h"
 #include "Spectrum.h"
 
-void
-Tests::run_all_tests ()
-{
-  ColorMap::run_tests ();
-  Keyboard::run_tests ();
-  Spectrum::run_tests ();
+void Tests::run_all_tests() {
+  ColorMap::run_tests();
+  Keyboard::run_tests();
+  Spectrum::run_tests();
 }

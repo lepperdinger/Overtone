@@ -31,34 +31,29 @@
 /**
  * This class projects the audio spectra onto the 88 keys of the keyboard.
  */
-class Keyboard
-{
+class Keyboard {
 public:
   using Vector = std::vector<double>;
   using KeyRange = std::pair<unsigned char, unsigned char>;
 
-  Keyboard () = default;
+  Keyboard() = default;
 
   /**
    * constructor that evaluates `keyboard` for the first frame of the video
    * @param spectra audio spectra of the keyboard sections
    */
-  Keyboard (std::initializer_list<Spectrum> spectra);
+  Keyboard(std::initializer_list<Spectrum> spectra);
 
-  std::shared_ptr<Vector>
-  get_keyboard () const
-  {
-    return keyboard;
-  }
+  std::shared_ptr<Vector> get_keyboard() const { return keyboard; }
 
   /**
    * Evaluates `keyboard` for the next video frame if there is a next video
    * frame.
    * @return false if there is no next video frame
    */
-  bool go_to_next_frame ();
+  bool go_to_next_frame();
 
-  static void run_tests ();
+  static void run_tests();
 
 private:
   // audio spectra of the keyboard sections
@@ -70,7 +65,7 @@ private:
   /**
    * Evaluates `keyboard`.
    */
-  void evaluate_keys ();
+  void evaluate_keys();
 
   /**
    * evaluate_keys() evaluates the weighted average of all the signals that
@@ -82,8 +77,8 @@ private:
    *                     belongs, i.e., an integer from 0 to 87
    * @return weight
    */
-  inline static double evaluate_weight (const double &key,
-                                        const unsigned char &assigned_key);
+  inline static double evaluate_weight(const double &key,
+                                       const unsigned char &assigned_key);
 };
 
 #endif // OVERTONE_KEYBOARD_H
