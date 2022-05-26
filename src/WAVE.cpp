@@ -48,8 +48,9 @@ void WAVE::read(std::ifstream &file, uint32_t &destination) {
 }
 
 void WAVE::read(std::ifstream &file, std::string &destination) {
-  char bytes[4];
+  char bytes[5];
   file.read(bytes, 4);
+  bytes[4] = '\0';
   destination.assign(bytes);
 }
 
