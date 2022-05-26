@@ -24,7 +24,7 @@
 #include "LinearInterpolation.h"
 #include <gtest/gtest.h>
 
-TEST(LinearInterpolation, interpolate) {
+TEST(test_LinearInterpolation, interpolate) {
   double tolerance = 1E-10;
   double expected = 1199.452154999999948;
   double result = LinearInterpolation::interpolate(

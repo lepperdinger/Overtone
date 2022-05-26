@@ -24,7 +24,7 @@
 #include "RGBColor.h"
 #include <gtest/gtest.h>
 
-TEST(RGBColor, hex_string_to_numbers) {
+TEST(test_RGBColor, hex_string_to_numbers) {
   std::vector<unsigned char> expected{0xff, 0xff, 0xff};
   EXPECT_EQ(RGBColor::hex_string_to_numbers("ffffff"), expected);
   EXPECT_EQ(RGBColor::hex_string_to_numbers("FFFFFF"), expected);
