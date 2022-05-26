@@ -35,7 +35,8 @@ void WAVE::read(std::ifstream &file, uint16_t &destination) {
 void WAVE::read(std::ifstream &file, int16_t &destination) {
   char bytes[2];
   file.read(bytes, 2);
-  destination = static_cast<unsigned char>(bytes[0]) | (bytes[1]) << 8;
+  destination = static_cast<unsigned char>(bytes[0]) |
+                static_cast<unsigned char>(bytes[1]) << 8;
 }
 
 void WAVE::read(std::ifstream &file, uint32_t &destination) {
