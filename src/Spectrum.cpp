@@ -22,7 +22,7 @@
 ******************************************************************************/
 
 #include "Spectrum.h"
-#include "Tests.h"
+#include "KeyboardFrequencies.h"
 #include <cmath>
 
 Spectrum::Spectrum(const WAVE &wave, const std::vector<unsigned> &channels,
@@ -80,11 +80,13 @@ void Spectrum::evaluate_frame() {
   Vector all_frequencies =
       evaluate_all_frequencies(time_range, wave.get_sample_rate());
   VectorRange frequency_range =
-      key_range_to_frequency_range(key_range, all_frequencies);
+      KeyboardFrequencies::key_range_to_frequency_range(key_range,
+                                                        all_frequencies);
   auto all_frequencies_begin = all_frequencies.cbegin();
   frequencies->assign(all_frequencies_begin + frequency_range.first,
                       all_frequencies_begin + frequency_range.second);
-  keys = std::make_shared<Vector>(evaluate_keys(*frequencies));
+  keys = std::make_shared<Vector>(
+      KeyboardFrequencies::frequencies_to_keys(*frequencies));
   spectrum = std::make_shared<Vector>(evaluate_spectrum(
       wave.get_signal(), channels, time_range, frequency_range));
 }
@@ -190,69 +192,8 @@ Spectrum::evaluate_all_frequencies(const VectorRange &time_range,
   return frequencies;
 }
 
-Spectrum::VectorRange
-Spectrum::key_range_to_frequency_range(const KeyRange &key_range,
-                                       const Vector &all_frequencies) {
-  double lower_frequency = keys_to_frequencies(key_range.first - 0.5);
-  double upper_frequency = keys_to_frequencies(key_range.second - 0.5);
-  auto lower_iterator =
-      std::find_if(all_frequencies.cbegin(), all_frequencies.cend(),
-                   [&lower_frequency](const double &frequency) {
-                     return lower_frequency < frequency;
-                   });
-  auto upper_iterator =
-      std::find_if(all_frequencies.cbegin(), all_frequencies.cend(),
-                   [&upper_frequency](const double &frequency) {
-                     return upper_frequency < frequency;
-                   });
-  VectorSize lower_index = lower_iterator - all_frequencies.cbegin();
-  VectorSize upper_index = upper_iterator - all_frequencies.cbegin();
-  return {lower_index, upper_index};
-}
-
-double Spectrum::keys_to_frequencies(const double &key) {
-  return pow(2., (key - 48.) / 12.) * 440.;
-}
-
-double Spectrum::frequencies_to_keys(const double &frequency) {
-  return 48. + 12. * log2(frequency / 440.);
-}
-
-Spectrum::Vector Spectrum::evaluate_keys(const Vector &frequencies) {
-  std::vector<double> keys;
-  keys.reserve(frequencies.size());
-  std::transform(frequencies.cbegin(), frequencies.cend(),
-                 std::back_inserter(keys), frequencies_to_keys);
-  return keys;
-}
-
 double Spectrum::sqr(double value) { return value * value; }
 
 double Spectrum::abs(double real_part, double imaginary_part) {
   return sqrt(sqr(real_part) + sqr(imaginary_part));
-}
-
-void Spectrum::run_tests() {
-  {
-    double tolerance{1e-12};
-    double frequency{440};
-    double key{48};
-    TEST(std::abs(keys_to_frequencies(key) - frequency) < tolerance)
-    TEST(std::abs(frequencies_to_keys(frequency) - key) < tolerance)
-
-    frequency = 34.55235;
-    TEST(std::abs(keys_to_frequencies(frequencies_to_keys(frequency)) -
-                  frequency) < tolerance)
-  }
-  {
-    Vector keys{22.3, 22.6, 23.3, 28, 30, 44.3};
-    KeyRange key_range{23, 32};
-    Vector frequencies;
-    std::transform(keys.cbegin(), keys.cend(), std::back_inserter(frequencies),
-                   keys_to_frequencies);
-    VectorRange frequency_range =
-        key_range_to_frequency_range(key_range, frequencies);
-    VectorRange expected{1, 5};
-    TEST(frequency_range == expected)
-  }
 }

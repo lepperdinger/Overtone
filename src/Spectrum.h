@@ -80,8 +80,6 @@ public:
    */
   KeyRange get_key_range() const { return key_range; }
 
-  static void run_tests();
-
 private:
   // WAVE object that contains the PCM signal.
   WAVE wave;
@@ -154,24 +152,6 @@ private:
                                          const VectorSize &sample_rate);
 
   /**
-   * Returns the index range of the frequencies between the key range
-   * key_range.first - 0.5 and key_range.second + 0.5
-   * @param key_range selected key range
-   * @param all_frequencies all frequencies of the Fourier transform
-   * @return frequencies that contain the specified key range
-   */
-  static VectorRange
-  key_range_to_frequency_range(const KeyRange &key_range,
-                               const Vector &all_frequencies);
-
-  /**
-   * Converts the frequencies to keyboard.
-   * @param frequencies frequencies
-   * @return keys
-   */
-  inline static Vector evaluate_keys(const Vector &frequencies);
-
-  /**
    * Square root.
    * @param value input value
    * @return square root of value
@@ -185,20 +165,6 @@ private:
    * @return absolute value of the complex number
    */
   inline static double abs(double real_part, double imaginary_part);
-
-  /**
-   * Converts a key to a frequency.
-   * @param key key
-   * @return frequency
-   */
-  inline static double keys_to_frequencies(const double &key);
-
-  /**
-   * Converts a frequency to a key.
-   * @param frequency frequency
-   * @return key
-   */
-  inline static double frequencies_to_keys(const double &frequency);
 };
 
 #endif // OVERTONE_SPECTRUM_H

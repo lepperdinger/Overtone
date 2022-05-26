@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
 project(Overtone)
-project(tests)
 
 include(FetchContent)
 FetchContent_Declare(
@@ -19,9 +18,16 @@ add_executable(Overtone
                apps/Overtone.cpp
                ${SRC})
 
-add_executable(tests
-               apps/tests.cpp
-               ${SRC})
-
 target_compile_options(Overtone PRIVATE -Wall -Wextra -Wpedantic -Werror)
-target_compile_options(tests PRIVATE -Wall -Wextra -Wpedantic -Werror)
+
+add_executable(test_LinearInterpolation test/test_LinearInterpolation.cpp ${SRC})
+target_link_libraries(test_LinearInterpolation gtest gtest_main)
+add_test(test_LinearInterpolation test_LinearInterpolation)
+
+add_executable(test_KeyboardFrequencies test/test_KeyboardFrequencies.cpp ${SRC})
+target_link_libraries(test_KeyboardFrequencies gtest gtest_main)
+add_test(test_KeyboardFrequencies test_KeyboardFrequencies)
+
+add_executable(test_RGBColor test/test_RGBColor.cpp ${SRC})
+target_link_libraries(test_RGBColor gtest gtest_main)
+add_test(test_RGBColor test_RGBColor)

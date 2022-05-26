@@ -22,7 +22,6 @@
 ******************************************************************************/
 
 #include "Keyboard.h"
-#include "Tests.h"
 
 Keyboard::Keyboard(std::initializer_list<Spectrum> spectra)
     : spectra(spectra), keyboard(std::make_shared<Vector>()) {
@@ -78,20 +77,4 @@ bool Keyboard::go_to_next_frame() {
     evaluate_keys();
   }
   return valid;
-}
-
-void Keyboard::run_tests() {
-  double tolerance{1e-12};
-  unsigned char assigned_key{42};
-  double shift{0.01};
-
-  double key = assigned_key;
-  double expected{1.0 + shift};
-  TEST(std::abs(evaluate_weight(key, assigned_key) - expected) < tolerance)
-
-  expected = shift;
-  key = assigned_key - .5;
-  TEST(std::abs(evaluate_weight(key, assigned_key) - expected) < tolerance)
-  key = assigned_key + .5;
-  TEST(std::abs(evaluate_weight(key, assigned_key) - expected) < tolerance)
 }

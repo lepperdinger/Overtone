@@ -59,8 +59,6 @@ public:
    */
   std::vector<std::string> get_theme_names();
 
-  static void run_tests();
-
 private:
   // each key of the keyboard is being multiplied by this value
   double gain;
@@ -82,13 +80,6 @@ private:
   void initialize_themes();
 
   bool check_if_theme_exists(const std::string &theme_name);
-
-  static double linear_interpolation(std::vector<double> lower_point,
-                                     std::vector<double> upper_point,
-                                     double x_value);
-
-  static std::vector<unsigned char>
-  hex_string_to_rgb_values(const std::string &hex_string);
 
   /**
    * @param string_color_map hex strings of the colors, e.g., { "03fa24", ... }

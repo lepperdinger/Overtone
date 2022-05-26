@@ -2,9 +2,9 @@
 
     Overtone: A Music Visualizer
 
-    Tests.cpp
+    LinearInterpolation.h
 
-    Copyright (C) 2022 Stefan Lepperdinger
+    Copyright (C) 2022  Stefan Lepperdinger
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,13 +21,15 @@
 
 ******************************************************************************/
 
-#include "Tests.h"
-#include "ColorMap.h"
-#include "Keyboard.h"
-#include "Spectrum.h"
+#ifndef OVERTONE_LINEARINTERPOLATION_H
+#define OVERTONE_LINEARINTERPOLATION_H
 
-void Tests::run_all_tests() {
-  ColorMap::run_tests();
-  Keyboard::run_tests();
-  Spectrum::run_tests();
-}
+#include <vector>
+
+class LinearInterpolation {
+public:
+  static double interpolate(std::vector<double> lower_point,
+                            std::vector<double> upper_point, double x_value);
+};
+
+#endif // OVERTONE_LINEARINTERPOLATION_H
