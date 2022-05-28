@@ -20,6 +20,8 @@ add_executable(Overtone
 
 target_compile_options(Overtone PRIVATE -Wall -Wextra -Wpedantic -Werror)
 
+enable_testing()
+
 add_executable(test_LinearInterpolation test/test_LinearInterpolation.cpp ${SRC})
 target_link_libraries(test_LinearInterpolation gtest gtest_main)
 add_test(test_LinearInterpolation test_LinearInterpolation)
