@@ -43,9 +43,9 @@ TEST(test_KeyboardFrequencies, key_range_to_frequency_range) {
   using VectorSize = Vector::size_type;
   using VectorRange = std::pair<VectorSize, VectorSize>;
 
-  std::vector<double> keys{22.3, 22.6, 23.3, 28, 30, 44.3};
+  Vector keys{22.3, 22.6, 23.3, 28, 30, 44.3};
   std::pair<VectorSize, VectorSize> key_range{23, 32};
-  std::vector<double> frequencies;
+  Vector frequencies;
   std::transform(keys.cbegin(), keys.cend(), std::back_inserter(frequencies),
                  KeyboardFrequencies::key_to_frequency);
   VectorRange frequency_range =
